@@ -61,7 +61,7 @@ app.get('/api/config', (req, res) => {
       ],
       originalPrice: 25000,
       salePrice: 5000,
-      image: 'images/product-main.png',
+      image: 'images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp',
       acceptLabel: 'Add My Healing Vault',
       declineLabel: "I'd rather pay full price",
       timerSeconds: 600
