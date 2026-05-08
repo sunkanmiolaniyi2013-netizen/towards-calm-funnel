@@ -1,0 +1,60 @@
+/* ── Thank You Page ─────────────────────────────────────── */
+[hidden]{display:none!important}
+.ty-body{background:#fce8e8;min-height:100vh;font-family:'Barlow',sans-serif}
+
+/* Confetti canvas */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* Layout */
+.ty-wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:2rem 1.5rem 4rem;display:flex;flex-direction:column;gap:1.5rem}
+
+/* Checkmark card */
+.ty-card{background:#fff;border-radius:16px;padding:2.5rem 2rem;text-align:center;box-shadow:0 4px 24px rgba(196,133,154,.15)}
+.ty-checkmark{width:72px;height:72px;margin:0 auto 1.25rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.ty-check-path{stroke-dasharray:40;stroke-dashoffset:40;animation:drawCheck .5s .4s ease forwards}
+@keyframes drawCheck{to{stroke-dashoffset:0}}
+.ty-title{font-size:1.75rem;font-weight:800;margin-bottom:.4rem;line-height:1.2}
+.ty-subtitle{font-size:.95rem;color:#666;margin-bottom:1.25rem;line-height:1.6}
+.ty-email-note{display:flex;align-items:flex-start;gap:.65rem;background:#fdf5f7;border:1px solid #f0d0d0;border-radius:8px;padding:.9rem 1rem;font-size:.85rem;color:#555;line-height:1.6;text-align:left}
+.ty-email-note strong{color:#1c1c1c}
+
+/* Order card */
+.ty-order-card{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 4px 24px rgba(196,133,154,.1)}
+.ty-order-title{font-size:1rem;font-weight:800;margin-bottom:1rem}
+.ty-order-row{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:#444;padding:.45rem 0;border-bottom:1px solid #f7f0f0}
+.ty-order-row:last-child{border-bottom:none}
+.ty-item-name{font-weight:600;line-height:1.4}
+.ty-free{color:#4caf50;font-weight:700}
+.ty-order-divider{border:none;border-top:1px solid #f0d0d0;margin:.5rem 0}
+.ty-order-total{font-size:1rem;font-weight:800;color:#c4859a;padding-top:.6rem!important;border-bottom:none!important}
+.ty-order-ref{font-size:.72rem;color:#bbb;margin-top:.5rem;font-family:monospace}
+
+/* Next steps card */
+.ty-next-card{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 4px 24px rgba(196,133,154,.1)}
+.ty-next-title{font-size:1rem;font-weight:800;margin-bottom:1.25rem}
+.ty-steps{display:flex;flex-direction:column;gap:1.1rem}
+.ty-step{display:flex;align-items:flex-start;gap:.85rem}
+.ty-step-icon{font-size:1.5rem;flex-shrink:0;width:36px;text-align:center}
+.ty-step-head{font-weight:800;font-size:.9rem;margin-bottom:.2rem}
+.ty-step-desc{font-size:.83rem;color:#666;line-height:1.6}
+
+/* Share card */
+.ty-share-card{background:#fff;border-radius:16px;padding:1.5rem;text-align:center;box-shadow:0 4px 24px rgba(196,133,154,.1)}
+.ty-share-text{font-size:.88rem;color:#666;margin-bottom:1rem}
+.ty-share-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.ty-share-btn{display:flex;align-items:center;gap:.5rem;padding:.65rem 1.25rem;border-radius:6px;font-size:.82rem;font-weight:700;color:#fff;text-decoration:none;transition:opacity .2s}
+.ty-share-btn:hover{opacity:.85}
+.ty-share-btn svg{width:18px;height:18px}
+.ty-wa{background:#25d366}
+.ty-fb{background:#1877f2}
+
+/* Back link */
+.ty-back{text-align:center;font-size:.82rem;color:#c4859a;text-decoration:underline;cursor:pointer}
+.ty-back:hover{color:#b0728a}
+
+@media(max-width:500px){
+  .ty-card{padding:1.75rem 1.25rem}
+  .ty-title{font-size:1.4rem}
+  .ty-wrap{padding:1.25rem .75rem 3rem}
+}

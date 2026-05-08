@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Thank You! — Towards Calm</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/thankyou.css"/>
+</head>
+<body class="ty-body">
+
+<!-- MINI HEADER -->
+<header class="ck-header">
+  <a href="index.html" class="ck-logo">
+    <div class="logo-ring" style="width:36px;height:36px">
+      <svg viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="13" r="6" stroke="#c4859a" stroke-width="2"/>
+        <path d="M8 35c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#c4859a" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="logo-name" style="font-size:.9rem">Towards Calm</span>
+  </a>
+</header>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- MAIN -->
+<div class="ty-wrap">
+
+  <!-- SUCCESS CARD -->
+  <div class="ty-card">
+    <div class="ty-checkmark">
+      <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="26" cy="26" r="25" stroke="#c4859a" stroke-width="2" fill="#fce8e8"/>
+        <path class="ty-check-path" d="M14 27l8 8 16-16" stroke="#c4859a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="ty-title">You're all set! 🎉</h1>
+    <p class="ty-subtitle">Thank you for your order. Your healing journey starts now.</p>
+    <div class="ty-email-note">
+      <span>📧</span>
+      <span>Check your email — your download links are on their way. <br/><strong>Can't find it? Check your spam folder.</strong></span>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="ty-order-card">
+    <h2 class="ty-order-title">📦 Your Order</h2>
+    <div id="ty-items"></div>
+    <div class="ty-order-divider"></div>
+    <div class="ty-order-row ty-order-total">
+      <span>Total Paid</span>
+      <span id="ty-total">—</span>
+    </div>
+    <div class="ty-order-ref" id="ty-ref"></div>
+  </div>
+
+  <!-- WHAT TO DO NEXT -->
+  <div class="ty-next-card">
+    <h2 class="ty-next-title">What happens next?</h2>
+    <div class="ty-steps">
+      <div class="ty-step">
+        <div class="ty-step-icon">📧</div>
+        <div>
+          <div class="ty-step-head">Check your email</div>
+          <p class="ty-step-desc">Your download links will arrive within a few minutes. Check spam if you don't see it.</p>
+        </div>
+      </div>
+      <div class="ty-step">
+        <div class="ty-step-icon">📥</div>
+        <div>
+          <div class="ty-step-head">Download your resources</div>
+          <p class="ty-step-desc">Click the links in the email to download your PDF bundle and any bonus resources you selected.</p>
+        </div>
+      </div>
+      <div class="ty-step">
+        <div class="ty-step-icon">🌱</div>
+        <div>
+          <div class="ty-step-head">Begin your healing journey</div>
+          <p class="ty-step-desc">Start with the Step-by-Step Trauma Recovery Guide. Take it one page at a time — you've got this.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE / SOCIAL PROOF -->
+  <div class="ty-share-card">
+    <p class="ty-share-text">💛 Love what we do? Share it with someone who needs it.</p>
+    <div class="ty-share-btns">
+      <a href="https://wa.me/?text=I%20just%20got%20the%20200%2B%20Therapy%20Bundle%20for%20FREE%20from%20Towards%20Calm!%20%F0%9F%8C%BF%20https%3A%2F%2Ftowardscalm.com" target="_blank" class="ty-share-btn ty-wa">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.561 4.14 1.535 5.874L0 24l6.316-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 01-5.015-1.374l-.36-.214-3.741.893.942-3.638-.235-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        Share on WhatsApp
+      </a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://towardscalm.com" target="_blank" class="ty-share-btn ty-fb">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.254h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+        Share on Facebook
+      </a>
+    </div>
+  </div>
+
+  <a href="index.html" class="ty-back">← Back to Towards Calm</a>
+
+</div><!-- /ty-wrap -->
+
+<script>
+(function(){
+  // Read cart and total from sessionStorage
+  let cart = [], total = 0;
+  try {
+    cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+    total = parseInt(sessionStorage.getItem('cartTotal') || '0', 10);
+  } catch(e){}
+
+  // Get ref from URL
+  const ref = new URLSearchParams(window.location.search).get('ref') || '';
+
+  // Render items
+  const list = document.getElementById('ty-items');
+  cart.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'ty-order-row';
+    const price = (!item.price || item.price === 0) ? '<span class="ty-free">FREE</span>' : '₦' + item.price.toLocaleString('en-NG');
+    row.innerHTML = `
+      <span class="ty-item-name">
+        ${item.isOTO ? '⭐ ' : '✅ '}${item.name || item.id}
+      </span>
+      <span>${price}</span>`;
+    list.appendChild(row);
+  });
+
+  // Total
+  const totalEl = document.getElementById('ty-total');
+  totalEl.textContent = total === 0 ? 'FREE' : '₦' + total.toLocaleString('en-NG');
+
+  // Reference
+  if(ref){
+    document.getElementById('ty-ref').textContent = 'Order reference: ' + ref;
+  }
+
+  // Clear session (clean up)
+  sessionStorage.removeItem('cart');
+  sessionStorage.removeItem('cartTotal');
+  sessionStorage.removeItem('otoAccepted');
+
+  // ── Confetti ──────────────────────────────────
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#c4859a','#fce8e8','#e8c4d0','#f5a0b5','#fff','#f0d0dc'];
+  const pieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    w: Math.random() * 10 + 5,
+    h: Math.random() * 6 + 3,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    speed: Math.random() * 3 + 1.5,
+    angle: Math.random() * 360,
+    spin: (Math.random() - 0.5) * 4,
+    drift: (Math.random() - 0.5) * 1.5
+  }));
+
+  let frame = 0;
+  function draw(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+      p.y += p.speed;
+      p.x += p.drift;
+      p.angle += p.spin;
+      if(p.y > canvas.height){ p.y = -10; p.x = Math.random() * canvas.width; }
+    });
+    frame++;
+    if(frame < 240) requestAnimationFrame(draw); // run for ~4s then stop
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+})();
+</script>
+
+</body>
+</html>

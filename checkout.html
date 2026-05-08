@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Checkout — Towards Calm</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="css/style.css"/>
+<link rel="stylesheet" href="css/checkout.css"/>
+<!-- Paystack inline JS -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body class="checkout-body">
+
+<!-- MINI HEADER -->
+<header class="ck-header">
+  <a href="index.html" class="ck-logo">
+    <div class="logo-ring" style="width:36px;height:36px">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="13" r="6" stroke="#c4859a" stroke-width="2"/>
+        <path d="M8 35c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#c4859a" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="logo-name" style="font-size:.9rem">Towards Calm</span>
+  </a>
+  <div class="ck-secure"><span>🔒</span> Secure Checkout</div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="ck-progress">
+  <div class="ck-progress-inner">
+    <span class="ck-step done">Cart</span>
+    <span class="ck-arrow">›</span>
+    <span class="ck-step active">Information</span>
+    <span class="ck-arrow">›</span>
+    <span class="ck-step">Payment</span>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="ck-wrap">
+
+  <!-- LEFT: FORM -->
+  <div class="ck-form-col">
+    <h1 class="ck-heading">Contact Information</h1>
+    <p class="ck-sub">We'll send your download link to this email.</p>
+
+    <form id="ck-form" novalidate>
+      <div class="ck-field">
+        <label for="ck-name">Full Name</label>
+        <input type="text" id="ck-name" name="name" placeholder="Jane Doe" autocomplete="name" required/>
+        <span class="ck-err" id="err-name"></span>
+      </div>
+      <div class="ck-field">
+        <label for="ck-email">Email Address</label>
+        <input type="email" id="ck-email" name="email" placeholder="jane@example.com" autocomplete="email" required/>
+        <span class="ck-err" id="err-email"></span>
+      </div>
+      <div class="ck-field">
+        <label for="ck-phone">Phone Number <span class="ck-optional">(optional)</span></label>
+        <input type="tel" id="ck-phone" name="phone" placeholder="+234 800 000 0000" autocomplete="tel"/>
+      </div>
+
+      <div class="ck-divider-label">Payment Details</div>
+
+      <div class="ck-pay-methods">
+        <div class="ck-pay-method active">
+          <img src="https://website-v8.cdn-ec.viddler.com/ec3ab0f2/paystack/2024/08/s-paystack-logo-600x200px.png" alt="Paystack" class="ck-paystack-logo" onerror="this.style.display='none'"/>
+          <span style="font-size:.8rem;color:#555">Pay securely with card or bank transfer</span>
+        </div>
+      </div>
+
+      <!-- Security badges -->
+      <div class="ck-trust">
+        <span>🔒 SSL Encrypted</span>
+        <span>✅ 60-Day Guarantee</span>
+        <span>⚡ Instant Delivery</span>
+      </div>
+
+      <button type="submit" class="ck-pay-btn" id="ck-submit">
+        <span id="ck-btn-label">Complete Purchase</span>
+        <span id="ck-btn-amount"></span>
+      </button>
+
+      <p class="ck-fine">By completing your purchase you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. Your data is safe and will never be shared.</p>
+    </form>
+  </div>
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div class="ck-summary-col">
+    <div class="ck-summary-box">
+      <h2 class="ck-summary-title">Order Summary</h2>
+      <div id="ck-items-list"></div>
+      <div class="ck-summary-divider"></div>
+      <div class="ck-summary-row">
+        <span>Subtotal</span>
+        <span id="ck-subtotal">₦0</span>
+      </div>
+      <div class="ck-summary-row">
+        <span>Delivery</span>
+        <span class="ck-free">FREE (Digital)</span>
+      </div>
+      <div class="ck-summary-divider"></div>
+      <div class="ck-summary-row ck-summary-total">
+        <span>Total</span>
+        <span id="ck-total-val">₦0</span>
+      </div>
+      <!-- Guarantee badge -->
+      <div class="ck-guarantee">
+        <span style="font-size:1.5rem">🛡️</span>
+        <div>
+          <div style="font-weight:700;font-size:.85rem">60-Day Money-Back Guarantee</div>
+          <div style="font-size:.78rem;color:#777;margin-top:.15rem">100% satisfaction or your money back. No questions asked.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /ck-wrap -->
+
+<!-- LOADING OVERLAY -->
+<div id="ck-loading" class="ck-loading-overlay">
+  <div class="ck-spinner"></div>
+  <p>Redirecting to secure payment…</p>
+</div>
+
+<!-- SUCCESS CAPTURE TOAST -->
+<div id="ck-toast" class="ck-toast" hidden>
+  ✅ Details saved! We'll email you if anything happens.
+</div>
+
+<script>
+(function(){
+  // ── Load cart from sessionStorage ──
+  let cart = [], total = 0;
+  try {
+    cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+    total = parseInt(sessionStorage.getItem('cartTotal') || '0', 10);
+  } catch(e){}
+
+  // ── Render order summary ──
+  const list = document.getElementById('ck-items-list');
+  cart.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'ck-item-row';
+    const priceStr = (!item.price || item.price === 0) ? 'FREE' : '₦' + item.price.toLocaleString('en-NG');
+    row.innerHTML = `
+      <div class="ck-item-img"><img src="images/product-main.png" alt="${item.name}" loading="lazy"/></div>
+      <div class="ck-item-info">
+        <div class="ck-item-name">${item.name}</div>
+        ${item.isOTO ? '<span class="ck-oto-tag">Special Offer</span>' : ''}
+      </div>
+      <div class="ck-item-price">${priceStr}</div>
+    `;
+    list.appendChild(row);
+  });
+
+  const fmtTotal = total === 0 ? 'FREE' : '₦' + total.toLocaleString('en-NG');
+  document.getElementById('ck-subtotal').textContent = fmtTotal;
+  document.getElementById('ck-total-val').textContent = fmtTotal;
+  document.getElementById('ck-btn-amount').textContent = total === 0 ? '— FREE' : `— ₦${total.toLocaleString('en-NG')}`;
+
+  // ── Lead capture on input (abandonment recovery) ──
+  let capturedOnce = false;
+  function captureIfReady(){
+    const name = document.getElementById('ck-name').value.trim();
+    const email = document.getElementById('ck-email').value.trim();
+    const phone = document.getElementById('ck-phone').value.trim();
+    if(!capturedOnce && name && email && email.includes('@')){
+      capturedOnce = true;
+      fetch('/api/lead/capture', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ name, email, phone, cart, total })
+      }).catch(()=>{});
+      showToast();
+    }
+  }
+
+  ['ck-name','ck-email','ck-phone'].forEach(id => {
+    document.getElementById(id).addEventListener('blur', captureIfReady);
+  });
+
+  function showToast(){
+    const t = document.getElementById('ck-toast');
+    t.hidden = false;
+    setTimeout(()=>{ t.classList.add('ck-toast-show'); },10);
+    setTimeout(()=>{ t.classList.remove('ck-toast-show'); setTimeout(()=>{ t.hidden=true; },400); }, 3500);
+  }
+
+  // ── Form submission → Paystack ──
+  let isSubmitting = false;
+
+  document.getElementById('ck-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(isSubmitting) return; // prevent double-click
+    
+    const name = document.getElementById('ck-name').value.trim();
+    const email = document.getElementById('ck-email').value.trim();
+    const phone = document.getElementById('ck-phone').value.trim();
+
+    // Basic validation
+    let valid = true;
+    if(!name){ document.getElementById('err-name').textContent='Name is required'; valid=false; }
+    else{ document.getElementById('err-name').textContent=''; }
+    if(!email || !email.includes('@')){ document.getElementById('err-email').textContent='Valid email required'; valid=false; }
+    else{ document.getElementById('err-email').textContent=''; }
+    if(!valid) return;
+
+    isSubmitting = true;
+    // Show loading
+    document.getElementById('ck-loading').classList.add('ck-loading-active');
+    document.getElementById('ck-submit').disabled = true;
+
+    try {
+      if(total === 0){
+        await fetch('/api/lead/capture', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ name, email, phone, cart, total, type:'FREE_CLAIM' })
+        });
+        window.location.href = 'thankyou.html';
+        return;
+      }
+
+      const res = await fetch('/api/pay/initialize', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ name, email, phone, cart, total })
+      });
+      const data = await res.json();
+      if(data.success && data.access_code){
+        // Hide loading spinner — Paystack popup takes over
+        document.getElementById('ck-loading').classList.remove('ck-loading-active');
+        document.getElementById('ck-submit').disabled = false;
+        isSubmitting = false;
+
+        const handler = PaystackPop.setup({
+          key: data.publicKey,
+          email: email,
+          amount: total,
+          currency: 'NGN',
+          ref: data.reference,
+          metadata: {
+            name, phone,
+            cart: JSON.stringify(cart),
+            custom_fields: [
+              { display_name: 'Customer Name', variable_name: 'name', value: name },
+              { display_name: 'Phone', variable_name: 'phone', value: phone },
+              { display_name: 'Products', variable_name: 'cart', value: cart.map(i=>i.name||i.id).join(', ') }
+            ]
+          },
+          onClose: function(){
+            // Popup closed without paying — allow retry
+            isSubmitting = false;
+            document.getElementById('ck-submit').disabled = false;
+          },
+          callback: async function(response){
+            // Notify our backend of successful payment → fires GHL PAID webhook
+            try {
+              await fetch('/api/pay/confirm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  reference: response.reference,
+                  email, name, phone, cart, total
+                })
+              });
+            } catch(e){ console.error('Confirm call failed', e); }
+            window.location.href = 'thankyou.html?ref=' + response.reference;
+          }
+        });
+        handler.openIframe();
+      } else {
+        alert('Payment initialization failed. Please try again.');
+        document.getElementById('ck-loading').classList.remove('ck-loading-active');
+        document.getElementById('ck-submit').disabled = false;
+        isSubmitting = false;
+      }
+    } catch(err){
+      alert('Network error. Please check your connection and try again.');
+      document.getElementById('ck-loading').classList.remove('ck-loading-active');
+      document.getElementById('ck-submit').disabled = false;
+      isSubmitting = false;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
