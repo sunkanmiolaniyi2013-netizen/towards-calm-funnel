@@ -59,8 +59,8 @@ app.get('/api/config', (req, res) => {
         'Inner child healing exercises',
         'Nervous system reset guide'
       ],
-      originalPrice: 300,
-      salePrice: 12.97,
+      originalPrice: 25000,
+      salePrice: 5000,
       image: 'images/product-main.png',
       acceptLabel: 'Add My Healing Vault',
       declineLabel: "I'd rather pay full price",

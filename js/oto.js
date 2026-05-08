@@ -61,10 +61,10 @@ window.OTO = (function () {
               ${o.features.map(f => `<li>✅ ${f}</li>`).join('')}
             </ul>
             <div class="oto-pricing">
-              <span class="oto-orig">$${o.originalPrice.toFixed(2)}</span>
-              <span class="oto-sale">$${o.salePrice.toFixed(2)}</span>
+              <span class="oto-orig" data-price="${o.originalPrice}">₦${o.originalPrice.toLocaleString('en-NG')}</span>
+              <span class="oto-sale" data-price="${o.salePrice}">₦${o.salePrice.toLocaleString('en-NG')}</span>
             </div>
-            <div class="oto-savings">$${savings} Savings</div>
+            <div class="oto-savings" id="oto-savings-label">₦${(o.originalPrice - o.salePrice).toLocaleString('en-NG')} Savings</div>
           </div>
         </div>
         <button class="oto-btn-accept" id="oto-accept">${o.acceptLabel}</button>
@@ -74,8 +74,23 @@ window.OTO = (function () {
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
 
-    // Animate in
-    requestAnimationFrame(() => modal.classList.add('oto-visible'));
+    // Apply currency conversion to OTO prices
+    requestAnimationFrame(() => {
+      modal.classList.add('oto-visible');
+      // Apply currency.js to newly added elements
+      if (window.TC && window.TC.formatPrice) {
+        modal.querySelectorAll('[data-price]').forEach(el => {
+          const ngn = parseFloat(el.getAttribute('data-price'));
+          if (!isNaN(ngn)) el.textContent = window.TC.formatPrice(ngn);
+        });
+        // Update savings label
+        const savingsEl = modal.querySelector('#oto-savings-label');
+        if (savingsEl) {
+          const saving = o.originalPrice - o.salePrice;
+          savingsEl.textContent = window.TC.formatPrice(saving) + ' Savings';
+        }
+      }
+    });
 
     // Timer
     let secs = o.timerSeconds;
@@ -101,11 +116,11 @@ window.OTO = (function () {
       const otoItem = {
         id: 'oto-mystery-box',
         name: o.productName,
-        price: Math.round(o.salePrice * 100), // in kobo
+        price: o.salePrice,  // Naira — checkout backend converts to kobo
         isOTO: true
       };
       const updatedCart = [...cartData, otoItem];
-      const updatedTotal = cartTotal + Math.round(o.salePrice * 100);
+      const updatedTotal = cartTotal + o.salePrice;  // Total in Naira
       closeModal();
       goCheckout(updatedCart, updatedTotal, true);
     });
