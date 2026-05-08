@@ -254,18 +254,19 @@
             isSubmitting = false;
             document.getElementById('ck-submit').disabled = false;
           },
-          callback: async function(response){
-            // Notify our backend of successful payment → fires GHL PAID webhook
-            try {
-              await fetch('/api/pay/confirm', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                  reference: response.reference,
-                  email, name, phone, cart, total
-                })
-              });
-            } catch(e){ console.error('Confirm call failed', e); }
+          callback: function(response){
+            // Fire confirm to backend (non-blocking) then go to thank you
+            // Using fetch fire-and-forget — confirm fires GHL PAID webhook
+            var confirmData = JSON.stringify({
+              reference: response.reference,
+              email: email, name: name, phone: phone, cart: cart, total: total
+            });
+            // sendBeacon survives page navigation
+            if(navigator.sendBeacon){
+              navigator.sendBeacon('/api/pay/confirm', new Blob([confirmData], {type:'application/json'}));
+            } else {
+              fetch('/api/pay/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:confirmData}).catch(()=>{});
+            }
             window.location.href = 'thankyou.html?ref=' + response.reference;
           }
         });
