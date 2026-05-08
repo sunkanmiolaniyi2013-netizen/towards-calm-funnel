@@ -1,4 +1,6 @@
 // ── Cart Logic ────────────────────────────────────────────
+// Prices are stored and calculated in NGN (Naira).
+// Display is handled by currency.js (TC.formatPrice / TC.applyPrices).
 (function(){
   let bumpsOn = new Set();
 
@@ -19,6 +21,11 @@
     document.getElementById('cd-btn').addEventListener('click', goCheckout);
 
     renderCart();
+
+    // Re-apply currency if it loads after cart renders
+    if(window.TC && window.TC.onReady){
+      TC.onReady(() => updateTotals());
+    }
   }
 
   function renderCart(){
@@ -41,7 +48,7 @@
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0">
-        <span class="cd-main-price">$0.00</span>
+        <span class="cd-main-price" data-price="0">FREE</span>
         <span class="cd-del">🗑</span>
       </div>
     `;
@@ -58,7 +65,7 @@
         </div>
         <div class="cd-bump-info">
           <div class="cd-bump-name">${bump.name}</div>
-          <div class="cd-bump-price">${formatPrice(bump.price)}</div>
+          <div class="cd-bump-price" data-price="${bump.price}">₦${bump.price.toLocaleString('en-NG')}</div>
         </div>
         <label class="toggle" aria-label="Add ${bump.name}">
           <input type="checkbox" ${isOn ? 'checked' : ''} data-id="${bump.id}"/>
@@ -73,12 +80,20 @@
       container.appendChild(row);
     });
 
+    // Apply currency to the freshly rendered items
+    if(window.TC && window.TC.applyPrices) TC.applyPrices(container);
+
     updateTotals();
   }
 
   function updateTotals(){
     let total = 0, count = 1;
     OFFERS.bumps.forEach(b => { if(bumpsOn.has(b.id)){ total += b.price; count++; } });
+
+    // Format using currency.js if available, otherwise fall back to NGN
+    const fmt = (window.TC && window.TC.formatPrice)
+      ? ngn => (ngn === 0 ? 'FREE' : TC.formatPrice(ngn))
+      : ngn => (ngn === 0 ? 'FREE' : '₦' + ngn.toLocaleString('en-NG'));
 
     // Header badge
     const hdr = document.getElementById('hdr-count');
@@ -90,17 +105,22 @@
 
     // Subtotal
     const totalEl = document.getElementById('cd-total');
-    if(totalEl) totalEl.textContent = total === 0 ? '$0.00' : '₦' + total.toLocaleString('en-NG');
+    if(totalEl){
+      totalEl.setAttribute('data-price', total);
+      totalEl.textContent = fmt(total);
+    }
 
     // Checkout button
     const btn = document.getElementById('cd-btn');
-    if(btn) btn.textContent = total === 0 ? 'Check out — FREE' : `Check out — ₦${total.toLocaleString('en-NG')}`;
+    if(btn) btn.textContent = total === 0 ? 'Check out — FREE' : `Check out — ${fmt(total)}`;
   }
 
   function openCart(){
     document.getElementById('cart-drawer').classList.add('open');
     document.getElementById('cart-overlay').classList.add('open');
     document.body.style.overflow = 'hidden';
+    // Track analytics + pixel
+    if(window.TC) TC.track('cart_open');
   }
 
   function closeCart(){
@@ -113,8 +133,12 @@
     const cart = [OFFERS.main];
     OFFERS.bumps.forEach(b => { if(bumpsOn.has(b.id)) cart.push(b); });
     const total = cart.reduce((s, i) => s + (i.price || 0), 0);
-    // Hand off to OTO popup (oto.js decides if popup shows or goes direct)
     closeCart();
+    // Track analytics + pixel
+    if(window.TC){
+      TC.track('checkout_start', { total });
+      TC.pixel('AddToCart', { value: total, currency: 'NGN' });
+    }
     window.OTO.trigger(cart, total);
   }
 

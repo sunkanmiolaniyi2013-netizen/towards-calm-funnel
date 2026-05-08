@@ -158,9 +158,16 @@
     list.appendChild(row);
   });
 
-  // Total
+  // Total — use currency conversion if available
   const totalEl = document.getElementById('ty-total');
-  totalEl.textContent = total === 0 ? 'FREE' : '₦' + total.toLocaleString('en-NG');
+  const fmtTy = (window.TC && window.TC.formatPrice && total > 0)
+    ? TC.formatPrice(total)
+    : (total === 0 ? 'FREE' : '₦' + total.toLocaleString('en-NG'));
+  totalEl.textContent = fmtTy;
+  // Also update when currency loads
+  if(window.TC && window.TC.onReady && total > 0){
+    TC.onReady(() => { totalEl.textContent = TC.formatPrice(total); });
+  }
 
   // Reference
   if(ref){
