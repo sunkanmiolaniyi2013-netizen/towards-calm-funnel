@@ -125,10 +125,7 @@
   <p>Redirecting to secure payment…</p>
 </div>
 
-<!-- SUCCESS CAPTURE TOAST -->
-<div id="ck-toast" class="ck-toast" hidden>
-  ✅ Details saved! We'll email you if anything happens.
-</div>
+
 
 <script>
 (function(){
@@ -174,19 +171,8 @@
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ name, email, phone, cart, total })
       }).catch(()=>{});
-      showToast();
+      // Silent — no toast shown to customer
     }
-  }
-
-  ['ck-name','ck-email','ck-phone'].forEach(id => {
-    document.getElementById(id).addEventListener('blur', captureIfReady);
-  });
-
-  function showToast(){
-    const t = document.getElementById('ck-toast');
-    t.hidden = false;
-    setTimeout(()=>{ t.classList.add('ck-toast-show'); },10);
-    setTimeout(()=>{ t.classList.remove('ck-toast-show'); setTimeout(()=>{ t.hidden=true; },400); }, 3500);
   }
 
   // ── Form submission → Paystack ──
