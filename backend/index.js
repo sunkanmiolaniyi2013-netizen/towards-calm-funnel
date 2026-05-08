@@ -55,14 +55,42 @@ app.get('/api/config', (req, res) => {
 // ============================================================
 app.post('/api/lead/capture', async (req, res) => {
   try {
-    const { name, email, phone, cart, total } = req.body;
+    const { name, email, phone, cart, total, type } = req.body;
     console.log(`📋 Lead captured: ${email} | ₦${total}`);
-    // Could save to DB here for extra persistence
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false });
   }
 });
+
+// ============================================================
+// POST /api/pay/free
+// Called when customer claims free item (total = 0).
+// No payment needed — fires GHL directly.
+// ============================================================
+app.post('/api/pay/free', async (req, res) => {
+  try {
+    const { name, email, phone, cart } = req.body;
+    console.log(`🆓 Free claim: ${email}`);
+
+    await fireGHLWebhook({
+      type: 'FREE_CLAIM',
+      name,
+      email,
+      phone,
+      cart: cart || [],
+      amount_paid: 0,
+      reference: `FREE-${Date.now()}`,
+      paid_at: new Date().toISOString()
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('❌ Free claim error:', err.message);
+    res.status(500).json({ success: false });
+  }
+});
+
 
 // ============================================================
 // POST /api/pay/initialize

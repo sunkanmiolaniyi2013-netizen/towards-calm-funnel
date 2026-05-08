@@ -215,9 +215,10 @@
 
     try {
       if(total === 0){
-        await fetch('/api/lead/capture', {
+        // Free product — fire GHL directly then go to thank you
+        await fetch('/api/pay/free', {
           method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ name, email, phone, cart, total, type:'FREE_CLAIM' })
+          body: JSON.stringify({ name, email, phone, cart })
         });
         window.location.href = 'thankyou.html';
         return;
