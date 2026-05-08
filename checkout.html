@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="stylesheet" href="css/style.css"/>
 <link rel="stylesheet" href="css/checkout.css"/>
-<!-- Paystack inline JS -->
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<!-- Paystack inline JS v2 -->
+<script src="https://js.paystack.co/v2/inline.js"></script>
 </head>
 <body class="checkout-body">
 
@@ -234,10 +234,10 @@
         document.getElementById('ck-submit').disabled = false;
         isSubmitting = false;
 
-        // Use resumeTransaction — backend already initialized it, we just open the UI
-        PaystackPop.resumeTransaction(data.access_code, {
+        // v2: resumeTransaction uses the pre-initialized access_code
+        var paystack = new PaystackPop();
+        paystack.resumeTransaction(data.access_code, {
           onSuccess: function(response){
-            // Fire confirm to backend (fire-and-forget via sendBeacon)
             var confirmData = JSON.stringify({
               reference: response.reference,
               email: email, name: name, phone: phone, cart: cart, total: total
@@ -250,7 +250,6 @@
             window.location.href = 'thankyou.html?ref=' + response.reference;
           },
           onCancel: function(){
-            // Popup closed without paying — allow retry
             isSubmitting = false;
             document.getElementById('ck-submit').disabled = false;
           }
