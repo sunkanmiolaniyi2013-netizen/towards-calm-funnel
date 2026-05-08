@@ -28,7 +28,7 @@
   });
 </script>
 <script src="js/analytics-tracker.js"></script>
-<script src="js/currency.js" defer></script>
+<script src="js/currency.js"></script>
 </head>
 <body class="checkout-body">
 
@@ -254,9 +254,16 @@
         return;
       }
 
+      const cur = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : { code: 'NGN', rate: 1 };
+      const convertedAmount = Math.round(total * cur.rate * 100) / 100;
+
       const res = await fetch('/api/pay/initialize', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ name, email, phone, cart, total })
+        body: JSON.stringify({
+          name, email, phone, cart, total,
+          currency: cur.code,
+          convertedAmount
+        })
       });
       const data = await res.json();
       if(data.success && data.access_code){

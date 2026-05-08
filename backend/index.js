@@ -231,7 +231,16 @@ app.post('/api/pay/free', async (req, res) => {
 // ============================================================
 app.post('/api/pay/initialize', async (req, res) => {
   try {
-    const { name, email, phone, cart, total } = req.body;
+    const { name, email, phone, cart, total, currency, convertedAmount } = req.body;
+
+    // Determine charge currency & amount
+    // Paystack supports: NGN, GHS, ZAR, USD, KES, CAD, XOF, EGP
+    const PAYSTACK_SUPPORTED = ['NGN','GHS','ZAR','USD','KES','CAD','XOF','EGP'];
+    const chargeCurrency = (currency && PAYSTACK_SUPPORTED.includes(currency)) ? currency : 'NGN';
+    // If charging in NGN, amount is in kobo (x100). For other currencies, in smallest unit (cents).
+    const chargeAmount = chargeCurrency === 'NGN'
+      ? Math.round(total * 100)         // NGN → kobo
+      : Math.round((convertedAmount || total) * 100); // foreign → cents/pence
 
     // Generate unique reference every time to avoid duplicate errors
     const uniqueRef = `TC-${Date.now()}-${Math.random().toString(36).substr(2,9)}-${Math.random().toString(36).substr(2,5)}`.toUpperCase();
@@ -241,8 +250,8 @@ app.post('/api/pay/initialize', async (req, res) => {
       {
         email,
         reference: uniqueRef,
-        amount: Math.round(total * 100), // convert Naira → kobo for Paystack
-        currency: 'NGN',
+        amount: chargeAmount,
+        currency: chargeCurrency,
         callback_url: `${process.env.BASE_URL}/thankyou.html`,
         metadata: {
           name,
