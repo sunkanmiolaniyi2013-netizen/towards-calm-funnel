@@ -73,7 +73,7 @@ app.post('/api/pay/initialize', async (req, res) => {
     const { name, email, phone, cart, total } = req.body;
 
     // Generate unique reference every time to avoid duplicate errors
-    const uniqueRef = `TC-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    const uniqueRef = `TC-${Date.now()}-${Math.random().toString(36).substr(2,9)}-${Math.random().toString(36).substr(2,5)}`.toUpperCase();
 
     const response = await axios.post(
       'https://api.paystack.co/transaction/initialize',
