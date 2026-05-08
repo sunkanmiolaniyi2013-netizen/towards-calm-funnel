@@ -250,22 +250,27 @@ async function fireGHLWebhook(payload) {
       : (payload.cart || '');
 
     const ghlPayload = {
-      // Standard GHL contact fields
+      // GHL standard contact fields (snake_case — matches {{contact.xxx}} in GHL)
+      first_name: firstName,
+      last_name: lastName,
+      email: payload.email || '',
+      phone: payload.phone || '',
+      // Also send camelCase for safety
       firstName,
       lastName,
       name: payload.name || '',
-      email: payload.email || '',
-      phone: payload.phone || '',
-      // Order data
+      // Order custom fields
+      order_type: payload.type,
       type: payload.type,
+      cart_items: cartItems,
       cart: cartItems,
-      amount_paid: payload.amount_paid || payload.total || 0,
-      reference: payload.reference || '',
-      paid_at: payload.paid_at || payload.abandoned_at || new Date().toISOString(),
-      // Raw cart for GHL custom field branching
       cart_ids: Array.isArray(payload.cart)
         ? payload.cart.map(i => i.id || i.name).join(',')
-        : ''
+        : '',
+      amount_paid: payload.amount_paid || payload.total || 0,
+      order_reference: payload.reference || '',
+      reference: payload.reference || '',
+      paid_at: payload.paid_at || payload.abandoned_at || new Date().toISOString()
     };
 
     await axios.post(url, ghlPayload, { headers: { 'Content-Type': 'application/json' } });
