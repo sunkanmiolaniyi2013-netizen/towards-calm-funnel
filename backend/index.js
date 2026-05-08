@@ -239,7 +239,36 @@ async function fireGHLWebhook(payload) {
     return;
   }
   try {
-    await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
+    // Split name into first/last for GHL compatibility
+    const nameParts = (payload.name || '').trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    // Build cart summary string for GHL custom fields
+    const cartItems = Array.isArray(payload.cart)
+      ? payload.cart.map(i => i.name || i.id).join(', ')
+      : (payload.cart || '');
+
+    const ghlPayload = {
+      // Standard GHL contact fields
+      firstName,
+      lastName,
+      name: payload.name || '',
+      email: payload.email || '',
+      phone: payload.phone || '',
+      // Order data
+      type: payload.type,
+      cart: cartItems,
+      amount_paid: payload.amount_paid || payload.total || 0,
+      reference: payload.reference || '',
+      paid_at: payload.paid_at || payload.abandoned_at || new Date().toISOString(),
+      // Raw cart for GHL custom field branching
+      cart_ids: Array.isArray(payload.cart)
+        ? payload.cart.map(i => i.id || i.name).join(',')
+        : ''
+    };
+
+    await axios.post(url, ghlPayload, { headers: { 'Content-Type': 'application/json' } });
     console.log(`📤 GHL webhook fired: ${payload.type} — ${payload.email}`);
   } catch (err) {
     console.error('❌ GHL webhook error:', err.message);
