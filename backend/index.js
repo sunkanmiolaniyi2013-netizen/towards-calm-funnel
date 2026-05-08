@@ -184,14 +184,42 @@ app.get('/api/geo', async (req, res) => {
 
 // ============================================================
 // POST /api/lead/capture
-// Called immediately when user starts filling checkout fields
+// Called when user starts filling checkout form.
+// Starts the abandonment timer immediately — if they never pay,
+// GHL fires after 10 minutes.
 // ============================================================
 app.post('/api/lead/capture', async (req, res) => {
   try {
-    const { name, email, phone, cart, total, type } = req.body;
+    const { name, email, phone, cart, total } = req.body;
+    if (!email) return res.json({ success: true });
+
     console.log(`📋 Lead captured: ${email} | ₦${total}`);
+
+    // Cancel any existing timer for this email (e.g. repeat visits)
+    if (pendingLeads.has(email)) {
+      clearTimeout(pendingLeads.get(email).timer);
+      pendingLeads.delete(email);
+    }
+
+    const leadData = { name, email, phone, cart: cart || [], total: total || 0 };
+
+    // Start 10-minute abandonment timer keyed by EMAIL
+    const timer = setTimeout(async () => {
+      if (pendingLeads.has(email)) {
+        const lead = pendingLeads.get(email);
+        console.log(`⚠️  Abandoned lead (form fill): ${lead.email}`);
+        analytics.abandonments++;
+        await fireGHLWebhook({ ...lead, type: 'ABANDONED', abandoned_at: new Date().toISOString() });
+        pendingLeads.delete(email);
+      }
+    }, 10 * 60 * 1000); // 10 minutes
+
+    leadData.timer = timer;
+    pendingLeads.set(email, leadData);
+
     res.json({ success: true });
   } catch (err) {
+    console.error('❌ Lead capture error:', err.message);
     res.status(500).json({ success: false });
   }
 });
@@ -274,17 +302,24 @@ app.post('/api/pay/initialize', async (req, res) => {
 
     const { reference, authorization_url, access_code } = response.data.data;
 
-    // Store lead + start 5-min abandonment timer
+    // Cancel the email-keyed lead/timer (from lead capture) so we restart with reference key
+    if (pendingLeads.has(email)) {
+      clearTimeout(pendingLeads.get(email).timer);
+      pendingLeads.delete(email);
+    }
+
+    // Store lead + start 5-min abandonment timer keyed by REFERENCE
     const leadData = { name, email, phone, cart, total, reference, paidAt: null };
 
     const timer = setTimeout(async () => {
       if (pendingLeads.has(reference)) {
         const lead = pendingLeads.get(reference);
-        console.log(`⚠️  Abandoned lead: ${lead.email}`);
+        console.log(`⚠️  Abandoned lead (payment popup): ${lead.email}`);
+        analytics.abandonments++;
         await fireGHLWebhook({ ...lead, type: 'ABANDONED', abandoned_at: new Date().toISOString() });
         pendingLeads.delete(reference);
       }
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 5 * 60 * 1000); // 5 minutes after opening Paystack
 
     leadData.timer = timer;
     pendingLeads.set(reference, leadData);
@@ -331,11 +366,15 @@ app.post('/api/pay/confirm', async (req, res) => {
     analytics.revenue += amountPaid;
     console.log(`✅ Payment verified: ${email} — ₦${amountPaid}`);
 
-    // Cancel abandonment timer if running
+    // Cancel abandonment timers (both reference and email keyed)
     if (pendingLeads.has(reference)) {
-      const lead = pendingLeads.get(reference);
-      clearTimeout(lead.timer);
+      clearTimeout(pendingLeads.get(reference).timer);
       pendingLeads.delete(reference);
+    }
+    const resolvedEmail = email || txn.customer?.email;
+    if (resolvedEmail && pendingLeads.has(resolvedEmail)) {
+      clearTimeout(pendingLeads.get(resolvedEmail).timer);
+      pendingLeads.delete(resolvedEmail);
     }
 
     // Fire PAID webhook to GHL

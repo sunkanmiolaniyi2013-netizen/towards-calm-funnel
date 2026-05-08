@@ -102,6 +102,11 @@
         <span id="ck-btn-amount"></span>
       </button>
 
+      <!-- Currency note: shown when visitor's currency differs from NGN -->
+      <div id="ck-currency-note" style="display:none;margin:-0.5rem 0 1rem;padding:.6rem 1rem;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;font-size:.8rem;color:#0369a1;text-align:center;line-height:1.4">
+        💱 <span id="ck-currency-msg"></span>
+      </div>
+
       <p class="ck-fine">By completing your purchase you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. Your data is safe and will never be shared.</p>
     </form>
   </div>
@@ -192,6 +197,21 @@
       if(subEl) subEl.textContent = fmtTotal;
       if(totEl) totEl.textContent = fmtTotal;
       if(btnAmt) btnAmt.textContent = total === 0 ? '— FREE' : `— ${fmtTotal}`;
+
+      // Show Paystack currency note for non-NGN visitors
+      const cur = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : null;
+      const noteEl = document.getElementById('ck-currency-note');
+      const msgEl = document.getElementById('ck-currency-msg');
+      if(cur && cur.code !== 'NGN' && noteEl && msgEl && total > 0){
+        const PAYSTACK_NATIVE = ['NGN','GHS','ZAR','USD','KES','CAD','XOF','EGP'];
+        if(PAYSTACK_NATIVE.includes(cur.code)){
+          msgEl.textContent = `Paystack will charge you ${cur.code} ${(total * cur.rate).toFixed(2)} — your preferred currency.`;
+        } else {
+          const localAmt = (total * cur.rate).toFixed(2);
+          msgEl.textContent = `Paystack processes in NGN. Your card will show approx. ${cur.symbol}${localAmt} ${cur.code} — your bank handles conversion.`;
+        }
+        noteEl.style.display = 'block';
+      }
     }
 
     applyCheckoutCurrency();
