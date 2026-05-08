@@ -237,15 +237,20 @@
         // v2: resumeTransaction uses the pre-initialized access_code
         var paystack = new PaystackPop();
         paystack.resumeTransaction(data.access_code, {
-          onSuccess: function(response){
-            var confirmData = JSON.stringify({
-              reference: response.reference,
-              email: email, name: name, phone: phone, cart: cart, total: total
-            });
-            if(navigator.sendBeacon){
-              navigator.sendBeacon('/api/pay/confirm', new Blob([confirmData], {type:'application/json'}));
-            } else {
-              fetch('/api/pay/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:confirmData}).catch(()=>{});
+          onSuccess: async function(response){
+            // Wait for backend to confirm + fire GHL BEFORE navigating
+            try {
+              await fetch('/api/pay/confirm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  reference: response.reference,
+                  email: email, name: name, phone: phone, cart: cart, total: total
+                })
+              });
+            } catch(e){
+              console.error('Confirm failed:', e);
+              // Still navigate even if confirm fails
             }
             window.location.href = 'thankyou.html?ref=' + response.reference;
           },
