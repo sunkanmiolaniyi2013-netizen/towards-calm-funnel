@@ -156,42 +156,51 @@
   } catch(e){}
 
   // ── Render order summary with currency conversion ──
-  const list = document.getElementById('ck-items-list');
-  cart.forEach(item => {
-    const row = document.createElement('div');
-    row.className = 'ck-item-row';
-    const priceNGN = item.price || 0;
-    row.innerHTML = `
-      <div class="ck-item-img"><img src="images/product-main.png" alt="${item.name}" loading="lazy"/></div>
-      <div class="ck-item-info">
-        <div class="ck-item-name">${item.name}</div>
-        ${item.isOTO ? '<span class="ck-oto-tag">Special Offer</span>' : ''}
-      </div>
-      <div class="ck-item-price" data-price="${priceNGN}">${priceNGN === 0 ? 'FREE' : '₦' + priceNGN.toLocaleString('en-NG')}</div>
-    `;
-    list.appendChild(row);
-  });
+  try {
+    const list = document.getElementById('ck-items-list');
+    cart.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'ck-item-row';
+      const priceNGN = item.price || 0;
+      row.innerHTML = `
+        <div class="ck-item-img"><img src="images/product-main.png" alt="${item.name}" loading="lazy"/></div>
+        <div class="ck-item-info">
+          <div class="ck-item-name">${item.name}</div>
+          ${item.isOTO ? '<span class="ck-oto-tag">Special Offer</span>' : ''}
+        </div>
+        <div class="ck-item-price" data-price="${priceNGN}">${priceNGN === 0 ? 'FREE' : '₦' + priceNGN.toLocaleString('en-NG')}</div>
+      `;
+      list.appendChild(row);
+    });
 
-  // Set totals with data-price for auto-conversion
-  document.getElementById('ck-subtotal').setAttribute('data-price', total);
-  document.getElementById('ck-total-val').setAttribute('data-price', total);
+    // Set totals with data-price for auto-conversion
+    document.getElementById('ck-subtotal').setAttribute('data-price', total);
+    document.getElementById('ck-total-val').setAttribute('data-price', total);
 
-  function applyCheckoutCurrency(){
-    const fmt = (window.TC && window.TC.formatPrice)
-      ? ngn => (ngn === 0 ? 'FREE' : TC.formatPrice(ngn))
-      : ngn => (ngn === 0 ? 'FREE' : '₦' + ngn.toLocaleString('en-NG'));
+    function applyCheckoutCurrency(){
+      const fmt = (window.TC && window.TC.formatPrice)
+        ? ngn => (ngn === 0 ? 'FREE' : TC.formatPrice(ngn))
+        : ngn => (ngn === 0 ? 'FREE' : '₦' + ngn.toLocaleString('en-NG'));
 
-    if(window.TC) TC.applyPrices(document);
+      // Only call applyPrices if it actually exists
+      if(window.TC && typeof window.TC.applyPrices === 'function') TC.applyPrices(document);
 
-    const fmtTotal = fmt(total);
-    document.getElementById('ck-subtotal').textContent = fmtTotal;
-    document.getElementById('ck-total-val').textContent = fmtTotal;
-    document.getElementById('ck-btn-amount').textContent = total === 0 ? '— FREE' : `— ${fmtTotal}`;
+      const fmtTotal = fmt(total);
+      const subEl = document.getElementById('ck-subtotal');
+      const totEl = document.getElementById('ck-total-val');
+      const btnAmt = document.getElementById('ck-btn-amount');
+      if(subEl) subEl.textContent = fmtTotal;
+      if(totEl) totEl.textContent = fmtTotal;
+      if(btnAmt) btnAmt.textContent = total === 0 ? '— FREE' : `— ${fmtTotal}`;
+    }
+
+    applyCheckoutCurrency();
+    if(window.TC && typeof window.TC.onReady === 'function') TC.onReady(applyCheckoutCurrency);
+
+  } catch(renderErr) {
+    // Rendering error must NEVER block payment flow
+    console.warn('Order summary render error (non-fatal):', renderErr);
   }
-
-  // Apply immediately, then again when currency loads
-  applyCheckoutCurrency();
-  if(window.TC && window.TC.onReady) TC.onReady(applyCheckoutCurrency);
 
   // ── Lead capture on input (abandonment recovery) ──
   let capturedOnce = false;
