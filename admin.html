@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Towards Calm — Analytics Dashboard</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #12121a;
+      --card:     #1a1a26;
+      --border:   #2a2a3a;
+      --accent:   #7c3aed;
+      --accent2:  #a855f7;
+      --green:    #10b981;
+      --blue:     #3b82f6;
+      --orange:   #f59e0b;
+      --red:      #ef4444;
+      --text:     #f1f5f9;
+      --muted:    #94a3b8;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ─── Login screen ─── */
+    #login-screen {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 100vh; gap: 1.5rem;
+      background: radial-gradient(ellipse at top, #1a0a2e 0%, var(--bg) 70%);
+    }
+    #login-screen h1 { font-size: 1.75rem; font-weight: 700; }
+    #login-screen h1 span { color: var(--accent2); }
+    #login-screen input {
+      padding: 0.85rem 1.25rem; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--text); font-size: 1rem; width: 300px; outline: none;
+      transition: border-color .2s;
+    }
+    #login-screen input:focus { border-color: var(--accent); }
+    #login-screen button {
+      padding: 0.85rem 2.5rem; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-size: 1rem; font-weight: 600;
+      border: none; cursor: pointer; width: 300px;
+      transition: opacity .2s; letter-spacing: .02em;
+    }
+    #login-screen button:hover { opacity: 0.88; }
+    #login-err { color: var(--red); font-size: .875rem; display: none; }
+
+    /* ─── Dashboard ─── */
+    #dashboard { display: none; }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-size: 1.1rem; font-weight: 700; }
+    .logo span { color: var(--accent2); }
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .live-badge {
+      display: flex; align-items: center; gap: .4rem;
+      background: rgba(16,185,129,.12); color: var(--green);
+      padding: .3rem .75rem; border-radius: 999px;
+      font-size: .75rem; font-weight: 600;
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: .3; }
+    }
+    .refresh-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); padding: .4rem .9rem; border-radius: 8px;
+      font-size: .8rem; cursor: pointer; transition: all .2s;
+    }
+    .refresh-btn:hover { border-color: var(--accent); color: var(--text); }
+
+    main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+
+    h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; }
+    h3 { font-size: .8rem; font-weight: 600; color: var(--muted);
+         text-transform: uppercase; letter-spacing: .08em; margin-bottom: .5rem; }
+
+    /* ─── KPI Cards ─── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.25rem 1.5rem;
+      transition: transform .2s, border-color .2s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .kpi-card .icon {
+      font-size: 1.5rem; margin-bottom: .75rem;
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .kpi-card .value {
+      font-size: 2rem; font-weight: 800; line-height: 1;
+      margin-bottom: .25rem;
+    }
+    .kpi-card .label { font-size: .8rem; color: var(--muted); }
+
+    .icon-visitors  { background: rgba(59,130,246,.15); }
+    .icon-revenue   { background: rgba(16,185,129,.15); }
+    .icon-purchases { background: rgba(124,58,237,.15); }
+    .icon-conv      { background: rgba(245,158,11,.15); }
+    .icon-cart      { background: rgba(168,85,247,.15); }
+    .icon-abandon   { background: rgba(239,68,68,.15); }
+
+    /* ─── Funnel ─── */
+    .section-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 768px) { .section-row { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+    }
+
+    .funnel-step {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .75rem 0; border-bottom: 1px solid var(--border);
+    }
+    .funnel-step:last-child { border-bottom: none; }
+    .funnel-label { flex: 1; font-size: .9rem; }
+    .funnel-count { font-size: 1.1rem; font-weight: 700; min-width: 60px; text-align: right; }
+    .funnel-bar-wrap { width: 120px; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .funnel-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .6s ease; }
+
+    /* ─── Event log ─── */
+    .event-log { max-height: 320px; overflow-y: auto; }
+    .event-log::-webkit-scrollbar { width: 4px; }
+    .event-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .event-row {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .6rem 0; border-bottom: 1px solid rgba(255,255,255,.05);
+      font-size: .8rem;
+    }
+    .event-row:last-child { border-bottom: none; }
+    .event-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .event-name { color: var(--text); flex: 1; }
+    .event-detail { color: var(--muted); font-size: .75rem; }
+    .event-time { color: var(--muted); font-size: .7rem; white-space: nowrap; }
+
+    .dot-purchase  { background: var(--green); }
+    .dot-page_view { background: var(--blue); }
+    .dot-cart_open { background: var(--accent2); }
+    .dot-lead_capture { background: var(--orange); }
+    .dot-abandoned { background: var(--red); }
+    .dot-free_claim { background: #06b6d4; }
+    .dot-default   { background: var(--muted); }
+
+    /* ─── Loading state ─── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, var(--surface) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 6px; height: 2rem;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ─── Footer ─── */
+    .dash-footer {
+      text-align: center; padding: 2rem;
+      font-size: .75rem; color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login-screen">
+  <h1>Towards <span>Calm</span> Analytics</h1>
+  <p style="color:var(--muted);font-size:.9rem;">Enter your admin password to continue</p>
+  <input type="password" id="admin-password" placeholder="Admin password" autocomplete="off"/>
+  <p id="login-err">❌ Wrong password. Try again.</p>
+  <button id="login-btn">Access Dashboard</button>
+</div>
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<div id="dashboard">
+  <header>
+    <div class="logo">Towards <span>Calm</span> — Analytics</div>
+    <div class="header-right">
+      <div class="live-badge"><div class="live-dot"></div> Live</div>
+      <button class="refresh-btn" onclick="loadStats()">⟳ Refresh</button>
+    </div>
+  </header>
+
+  <main>
+    <h2>📊 Sales Overview</h2>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="icon icon-visitors">👥</div>
+        <div class="value" id="kpi-visitors">—</div>
+        <div class="label">Landing Visitors</div>
+      </div>
+      <div class="kpi-card">
+        <div class="icon icon-revenue">💰</div>
+        <div class="value" id="kpi-revenue">—</div>
+        <div class="label">Total Revenue (₦)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="icon icon-purchases">🛒</div>
+        <div class="value" id="kpi-purchases">—</div>
+        <div class="label">Paid Orders</div>
+      </div>
+      <div class="kpi-card">
+        <div class="icon icon-conv">📈</div>
+        <div class="value" id="kpi-conv">—</div>
+        <div class="label">Conversion Rate</div>
+      </div>
+      <div class="kpi-card">
+        <div class="icon icon-cart">🛍️</div>
+        <div class="value" id="kpi-aov">—</div>
+        <div class="label">Avg. Order Value</div>
+      </div>
+      <div class="kpi-card">
+        <div class="icon icon-abandon">⚠️</div>
+        <div class="value" id="kpi-abandon">—</div>
+        <div class="label">Abandonments</div>
+      </div>
+    </div>
+
+    <!-- Funnel + Event Log -->
+    <div class="section-row">
+
+      <!-- Conversion Funnel -->
+      <div class="panel">
+        <h3>Conversion Funnel</h3>
+        <div id="funnel-steps">
+          <div class="funnel-step">
+            <span class="funnel-label">🌐 Landing Page</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" id="bar-landing" style="width:100%"></div></div>
+            <span class="funnel-count" id="f-landing">—</span>
+          </div>
+          <div class="funnel-step">
+            <span class="funnel-label">🛒 Cart Opens</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" id="bar-cart" style="width:0%"></div></div>
+            <span class="funnel-count" id="f-cart">—</span>
+          </div>
+          <div class="funnel-step">
+            <span class="funnel-label">💳 Checkout</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" id="bar-checkout" style="width:0%"></div></div>
+            <span class="funnel-count" id="f-checkout">—</span>
+          </div>
+          <div class="funnel-step">
+            <span class="funnel-label">📝 Lead Filled</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" id="bar-lead" style="width:0%"></div></div>
+            <span class="funnel-count" id="f-lead">—</span>
+          </div>
+          <div class="funnel-step">
+            <span class="funnel-label">✅ Purchased</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" id="bar-purchase" style="width:0%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div>
+            <span class="funnel-count" id="f-purchase">—</span>
+          </div>
+          <div class="funnel-step">
+            <span class="funnel-label">🆓 Free Claims</span>
+            <div class="funnel-bar-wrap"><div class="funnel-bar" id="bar-free" style="width:0%;background:linear-gradient(90deg,#06b6d4,#22d3ee)"></div></div>
+            <span class="funnel-count" id="f-free">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Event Log -->
+      <div class="panel">
+        <h3>Recent Activity</h3>
+        <div class="event-log" id="event-log">
+          <div style="color:var(--muted);font-size:.85rem;padding:1rem 0">Loading events…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- More stats row -->
+    <div class="section-row">
+      <div class="panel">
+        <h3>OTO Performance</h3>
+        <div class="funnel-step">
+          <span class="funnel-label">👁 OTO Views</span>
+          <span class="funnel-count" id="oto-views">—</span>
+        </div>
+        <div class="funnel-step">
+          <span class="funnel-label">✅ OTO Accepts</span>
+          <span class="funnel-count" id="oto-accepts">—</span>
+        </div>
+        <div class="funnel-step">
+          <span class="funnel-label">❌ OTO Declines</span>
+          <span class="funnel-count" id="oto-declines">—</span>
+        </div>
+        <div class="funnel-step">
+          <span class="funnel-label">📊 OTO Accept Rate</span>
+          <span class="funnel-count" id="oto-rate">—</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>All Page Views</h3>
+        <div class="funnel-step">
+          <span class="funnel-label">🏠 Landing Page</span>
+          <span class="funnel-count" id="pv-landing">—</span>
+        </div>
+        <div class="funnel-step">
+          <span class="funnel-label">💳 Checkout Page</span>
+          <span class="funnel-count" id="pv-checkout">—</span>
+        </div>
+        <div class="funnel-step">
+          <span class="funnel-label">🎉 Thank You Page</span>
+          <span class="funnel-count" id="pv-thankyou">—</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="dash-footer">
+    Towards Calm Analytics — Data resets on server restart. Upgrade to a database for persistent tracking.
+  </div>
+</div>
+
+<script>
+  let adminKey = '';
+
+  document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('admin-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') login();
+  });
+
+  function login() {
+    const pwd = document.getElementById('admin-password').value.trim();
+    if (!pwd) return;
+    adminKey = pwd;
+    fetch('/api/analytics/stats?key=' + encodeURIComponent(pwd))
+      .then(r => {
+        if (r.status === 401) throw new Error('Unauthorized');
+        return r.json();
+      })
+      .then(data => {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        renderStats(data);
+        // Auto-refresh every 30 seconds
+        setInterval(loadStats, 30000);
+      })
+      .catch(() => {
+        document.getElementById('login-err').style.display = 'block';
+      });
+  }
+
+  function loadStats() {
+    fetch('/api/analytics/stats?key=' + encodeURIComponent(adminKey))
+      .then(r => r.json())
+      .then(renderStats)
+      .catch(console.error);
+  }
+
+  function renderStats(d) {
+    const top = d.total_visitors || 1;
+
+    // KPI cards
+    document.getElementById('kpi-visitors').textContent  = d.total_visitors || 0;
+    document.getElementById('kpi-revenue').textContent   = '₦' + Number(d.revenue || 0).toLocaleString('en-NG');
+    document.getElementById('kpi-purchases').textContent = d.purchases || 0;
+    document.getElementById('kpi-conv').textContent      = d.conversion_rate || '0.0%';
+    document.getElementById('kpi-aov').textContent       = '₦' + Number(d.avg_order_value || 0).toLocaleString('en-NG');
+    document.getElementById('kpi-abandon').textContent   = d.abandonments || 0;
+
+    // Funnel
+    const pct = (n) => Math.min(100, Math.round((n / top) * 100)) + '%';
+    document.getElementById('f-landing').textContent  = d.total_visitors || 0;
+    document.getElementById('f-cart').textContent     = d.cart_opens || 0;
+    document.getElementById('f-checkout').textContent = d.checkout_starts || 0;
+    document.getElementById('f-lead').textContent     = d.lead_captures || 0;
+    document.getElementById('f-purchase').textContent = d.purchases || 0;
+    document.getElementById('f-free').textContent     = d.free_claims || 0;
+
+    document.getElementById('bar-cart').style.width     = pct(d.cart_opens);
+    document.getElementById('bar-checkout').style.width = pct(d.checkout_starts);
+    document.getElementById('bar-lead').style.width     = pct(d.lead_captures);
+    document.getElementById('bar-purchase').style.width = pct(d.purchases);
+    document.getElementById('bar-free').style.width     = pct(d.free_claims);
+
+    // OTO
+    document.getElementById('oto-views').textContent   = d.oto_views || 0;
+    document.getElementById('oto-accepts').textContent = d.oto_accepts || 0;
+    document.getElementById('oto-declines').textContent= d.oto_declines || 0;
+    const otoRate = d.oto_views > 0
+      ? Math.round((d.oto_accepts / d.oto_views) * 100) + '%'
+      : '0%';
+    document.getElementById('oto-rate').textContent = otoRate;
+
+    // Page views
+    const pv = d.page_views || {};
+    document.getElementById('pv-landing').textContent  = pv.landing || 0;
+    document.getElementById('pv-checkout').textContent = pv.checkout || 0;
+    document.getElementById('pv-thankyou').textContent = pv.thankyou || 0;
+
+    // Event log
+    const log = document.getElementById('event-log');
+    if (!d.events || d.events.length === 0) {
+      log.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:1rem 0">No events yet. Start the funnel!</div>';
+      return;
+    }
+    const dotClass = {
+      purchase: 'dot-purchase', page_view: 'dot-page_view',
+      cart_open: 'dot-cart_open', lead_capture: 'dot-lead_capture',
+      abandoned: 'dot-abandoned', free_claim: 'dot-free_claim'
+    };
+    const labels = {
+      page_view: '📄 Page View', cart_open: '🛒 Cart Opened',
+      oto_view: '💡 OTO Shown', oto_accept: '✅ OTO Accepted',
+      oto_decline: '❌ OTO Declined', checkout_start: '💳 Checkout',
+      lead_capture: '📝 Lead Captured', purchase: '💰 Purchase',
+      free_claim: '🆓 Free Claim', abandoned: '⚠️ Abandoned'
+    };
+    log.innerHTML = d.events.map(e => {
+      const dc = dotClass[e.event] || 'dot-default';
+      const label = labels[e.event] || e.event;
+      const detail = e.data?.email || e.data?.page || '';
+      const time = e.ts ? new Date(e.ts).toLocaleTimeString() : '';
+      return `<div class="event-row">
+        <div class="event-dot ${dc}"></div>
+        <span class="event-name">${label}</span>
+        <span class="event-detail">${detail}</span>
+        <span class="event-time">${time}</span>
+      </div>`;
+    }).join('');
+  }
+</script>
+</body>
+</html>

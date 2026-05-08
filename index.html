@@ -8,7 +8,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="stylesheet" href="css/style.css"/>
 <link rel="stylesheet" href="css/oto.css"/>
-</head>
+<!-- Facebook Pixel (ID injected dynamically) -->
+<script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  // Pixel ID loaded from backend config
+  fetch('/api/config').then(r=>r.json()).then(cfg=>{
+    if(cfg.pixelId && cfg.pixelId !== 'YOUR_PIXEL_ID'){
+      fbq('init', cfg.pixelId);
+      fbq('track', 'PageView');
+    }
+  });
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1"/></noscript>
+
 <body>
 
 <!-- ANNOUNCEMENT BAR -->
@@ -339,9 +357,18 @@
   </div>
 </aside>
 
+<script src="js/analytics-tracker.js"></script>
+<script src="js/currency.js" defer></script>
 <script src="js/offers.js" defer></script>
 <script src="js/oto.js" defer></script>
 <script src="js/cart.js" defer></script>
+<script>
+// Track landing page view
+document.addEventListener('DOMContentLoaded', function(){
+  if(window.TC) TC.track('page_view', { page: 'landing' });
+});
+</script>
+
 <script>
 /* Gallery */
 document.querySelectorAll('.g-th').forEach(t=>{

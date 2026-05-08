@@ -8,7 +8,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="stylesheet" href="css/style.css"/>
 <link rel="stylesheet" href="css/thankyou.css"/>
-</head>
+<!-- Facebook Pixel -->
+<script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+</script>
+<script src="js/analytics-tracker.js"></script>
+
 <body class="ty-body">
 
 <!-- MINI HEADER -->
@@ -117,7 +128,23 @@
   // Get ref from URL
   const ref = new URLSearchParams(window.location.search).get('ref') || '';
 
-  // Render items
+  // Fire pixel + analytics on load
+  fetch('/api/config').then(r=>r.json()).then(cfg=>{
+    if(cfg.pixelId && cfg.pixelId !== 'YOUR_PIXEL_ID'){
+      fbq('init', cfg.pixelId);
+      fbq('track', 'PageView');
+      if(total > 0){
+        fbq('track', 'Purchase', { value: total, currency: 'NGN' });
+      }
+    }
+  });
+  // Track in our analytics
+  if(window.TC){
+    TC.track('page_view', { page: 'thankyou' });
+    if(total > 0) TC.track('purchase', { amount: total, reference: ref });
+    else TC.track('free_claim', { reference: ref });
+  }
+
   const list = document.getElementById('ty-items');
   cart.forEach(item => {
     const row = document.createElement('div');

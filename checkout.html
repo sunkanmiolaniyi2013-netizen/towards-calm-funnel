@@ -10,6 +10,25 @@
 <link rel="stylesheet" href="css/checkout.css"/>
 <!-- Paystack inline JS v2 -->
 <script src="https://js.paystack.co/v2/inline.js"></script>
+<!-- Facebook Pixel -->
+<script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fetch('/api/config').then(r=>r.json()).then(cfg=>{
+    if(cfg.pixelId && cfg.pixelId !== 'YOUR_PIXEL_ID'){
+      fbq('init', cfg.pixelId);
+      fbq('track', 'PageView');
+      fbq('track', 'InitiateCheckout');
+    }
+  });
+</script>
+<script src="js/analytics-tracker.js"></script>
+<script src="js/currency.js" defer></script>
 </head>
 <body class="checkout-body">
 
