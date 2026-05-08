@@ -168,7 +168,7 @@
       row.className = 'ck-item-row';
       const priceNGN = item.price || 0;
       row.innerHTML = `
-        <div class="ck-item-img"><img src="images/product-main.png" alt="${item.name}" loading="lazy"/></div>
+        <div class="ck-item-img"><img src="${item.image || 'images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp'}" alt="${item.name}" loading="lazy"/></div>
         <div class="ck-item-info">
           <div class="ck-item-name">${item.name}</div>
           ${item.isOTO ? '<span class="ck-oto-tag">Special Offer</span>' : ''}

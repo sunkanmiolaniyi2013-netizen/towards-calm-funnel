@@ -37,7 +37,7 @@
     mainRow.className = 'cd-main';
     mainRow.innerHTML = `
       <div class="cd-main-img">
-        <img src="images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp" alt="${OFFERS.main.name}" loading="lazy"/>
+        <img src="${OFFERS.main.image || 'images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp'}" alt="${OFFERS.main.name}" loading="lazy"/>
       </div>
       <div class="cd-main-info">
         <div class="cd-main-name">${OFFERS.main.name}</div>
@@ -61,7 +61,7 @@
       row.className = 'cd-bump';
       row.innerHTML = `
         <div class="cd-bump-img">
-          <img src="images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp" alt="${bump.name}" loading="lazy"/>
+          <img src="${bump.image || 'images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp'}" alt="${bump.name}" loading="lazy"/>
         </div>
         <div class="cd-bump-info">
           <div class="cd-bump-name">${bump.name}</div>
