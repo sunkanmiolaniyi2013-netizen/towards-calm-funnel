@@ -271,13 +271,13 @@
         });
         handler.openIframe();
       } else {
-        alert('Payment initialization failed. Please try again.');
+        alert('Payment error: ' + (data.error || 'Please try again.'));
         document.getElementById('ck-loading').classList.remove('ck-loading-active');
         document.getElementById('ck-submit').disabled = false;
         isSubmitting = false;
       }
     } catch(err){
-      alert('Network error. Please check your connection and try again.');
+      alert('Could not connect to server. Error: ' + err.message);
       document.getElementById('ck-loading').classList.remove('ck-loading-active');
       document.getElementById('ck-submit').disabled = false;
       isSubmitting = false;

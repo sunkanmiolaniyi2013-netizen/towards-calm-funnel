@@ -80,7 +80,7 @@ app.post('/api/pay/initialize', async (req, res) => {
       {
         email,
         reference: uniqueRef,
-        amount: Math.round(total), // already in kobo from frontend
+        amount: Math.round(total * 100), // convert Naira → kobo for Paystack
         currency: 'NGN',
         callback_url: `${process.env.BASE_URL}/thankyou.html`,
         metadata: {
@@ -127,8 +127,9 @@ app.post('/api/pay/initialize', async (req, res) => {
       publicKey: process.env.PAYSTACK_PUBLIC_KEY  // needed for inline popup
     });
   } catch (err) {
-    console.error('❌ Payment init error:', err.response?.data || err.message);
-    res.status(500).json({ success: false, error: 'Payment initialization failed' });
+    const errMsg = err.response?.data?.message || err.message || 'Unknown error';
+    console.error('❌ Payment init error:', errMsg, err.response?.data);
+    res.status(200).json({ success: false, error: errMsg }); // 200 so fetch doesn't throw
   }
 });
 
