@@ -10,7 +10,7 @@ const OFFERS = {
     name: '200+ Therapy Bundle',
     description: 'Step-by-step trauma recovery guide, 1000+ healing notes, mindfulness exercises & more',
     price: 0,
-    image: 'images/NewStructurePPIMage_9_bdf5b193-1cfa-4d00-a496-2388e94994b3.webp',
+    image: 'images/orig-1.png',
     required: true
   },
 
