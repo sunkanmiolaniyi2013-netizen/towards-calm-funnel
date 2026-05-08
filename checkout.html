@@ -234,43 +234,27 @@
         document.getElementById('ck-submit').disabled = false;
         isSubmitting = false;
 
-        const handler = PaystackPop.setup({
-          key: data.publicKey,
-          email: email,
-          amount: total,
-          currency: 'NGN',
-          ref: data.reference,
-          metadata: {
-            name, phone,
-            cart: JSON.stringify(cart),
-            custom_fields: [
-              { display_name: 'Customer Name', variable_name: 'name', value: name },
-              { display_name: 'Phone', variable_name: 'phone', value: phone },
-              { display_name: 'Products', variable_name: 'cart', value: cart.map(i=>i.name||i.id).join(', ') }
-            ]
-          },
-          onClose: function(){
-            // Popup closed without paying — allow retry
-            isSubmitting = false;
-            document.getElementById('ck-submit').disabled = false;
-          },
-          callback: function(response){
-            // Fire confirm to backend (non-blocking) then go to thank you
-            // Using fetch fire-and-forget — confirm fires GHL PAID webhook
+        // Use resumeTransaction — backend already initialized it, we just open the UI
+        PaystackPop.resumeTransaction(data.access_code, {
+          onSuccess: function(response){
+            // Fire confirm to backend (fire-and-forget via sendBeacon)
             var confirmData = JSON.stringify({
               reference: response.reference,
               email: email, name: name, phone: phone, cart: cart, total: total
             });
-            // sendBeacon survives page navigation
             if(navigator.sendBeacon){
               navigator.sendBeacon('/api/pay/confirm', new Blob([confirmData], {type:'application/json'}));
             } else {
               fetch('/api/pay/confirm',{method:'POST',headers:{'Content-Type':'application/json'},body:confirmData}).catch(()=>{});
             }
             window.location.href = 'thankyou.html?ref=' + response.reference;
+          },
+          onCancel: function(){
+            // Popup closed without paying — allow retry
+            isSubmitting = false;
+            document.getElementById('ck-submit').disabled = false;
           }
         });
-        handler.openIframe();
       } else {
         alert('Payment error: ' + (data.error || 'Please try again.'));
         document.getElementById('ck-loading').classList.remove('ck-loading-active');
