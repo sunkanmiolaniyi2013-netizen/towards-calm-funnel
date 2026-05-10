@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link rel="stylesheet" href="css/style.css"/>
 <link rel="stylesheet" href="css/checkout.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
 <!-- Paystack inline JS v2 -->
 <script src="https://js.paystack.co/v2/inline.js"></script>
 <!-- Facebook Pixel -->
@@ -78,10 +79,20 @@
       </div>
       <div class="ck-field">
         <label for="ck-phone">Phone Number <span class="ck-optional">(optional)</span></label>
-        <input type="tel" id="ck-phone" name="phone" placeholder="+234 800 000 0000" autocomplete="tel"/>
+        <input type="tel" id="ck-phone" name="phone" autocomplete="tel"/>
+        <span class="ck-err" id="err-phone" style="margin-top:2px;"></span>
       </div>
 
-      <div class="ck-divider-label">Payment Details</div>
+      <div class="ck-divider-label">Processing Method</div>
+      <label class="ck-support-wrap">
+        <input type="checkbox" id="ck-support-cb">
+        <div class="ck-support-content">
+          <span class="ck-support-text">Support Our Mission: Help Us Reach More Families</span>
+          <span class="ck-support-price" id="ck-support-price-lbl" data-price="6077"></span>
+        </div>
+      </label>
+
+      <div class="ck-divider-label" style="margin-top:1.5rem">Payment Details</div>
 
       <div class="ck-pay-methods">
         <div class="ck-pay-method active">
@@ -194,9 +205,11 @@
       const subEl = document.getElementById('ck-subtotal');
       const totEl = document.getElementById('ck-total-val');
       const btnAmt = document.getElementById('ck-btn-amount');
+      const suppPriceEl = document.getElementById('ck-support-price-lbl');
       if(subEl) subEl.textContent = fmtTotal;
       if(totEl) totEl.textContent = fmtTotal;
       if(btnAmt) btnAmt.textContent = total === 0 ? '— FREE' : `— ${fmtTotal}`;
+      if(suppPriceEl) suppPriceEl.textContent = fmt(6077);
 
       // Show Paystack currency note for non-NGN visitors
       const cur = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : null;
@@ -242,13 +255,72 @@
   // ── Form submission → Paystack ──
   let isSubmitting = false;
 
+  document.getElementById('ck-form').addEventListener('input', captureIfReady);
+
+  // ── Support Checkbox Logic ──
+  const supportCb = document.getElementById('ck-support-cb');
+  if(supportCb){
+    supportCb.addEventListener('change', function(){
+      const supportItem = {
+        id: 'support-mission',
+        name: 'Support Our Mission',
+        price: 6077,
+        isOTO: false
+      };
+      if(this.checked){
+        cart.push(supportItem);
+        total += 6077;
+      } else {
+        cart = cart.filter(i => i.id !== 'support-mission');
+        total -= 6077;
+      }
+      
+      // Update data-price attrs
+      document.getElementById('ck-subtotal').setAttribute('data-price', total);
+      document.getElementById('ck-total-val').setAttribute('data-price', total);
+      
+      // Re-render items visually (simple append/remove without full re-render)
+      const list = document.getElementById('ck-items-list');
+      if(this.checked){
+        const row = document.createElement('div');
+        row.className = 'ck-item-row ck-support-row';
+        row.innerHTML = `
+          <div class="ck-item-img" style="display:flex;align-items:center;justify-content:center;background:#fce8e8;font-size:1.5rem">❤️</div>
+          <div class="ck-item-info">
+            <div class="ck-item-name">Support Our Mission</div>
+          </div>
+          <div class="ck-item-price" data-price="6077"></div>
+        `;
+        list.appendChild(row);
+      } else {
+        const row = list.querySelector('.ck-support-row');
+        if(row) row.remove();
+      }
+      
+      // Force currency update on UI
+      if(window.TC && typeof window.TC.applyPrices === 'function') {
+        window.TC.applyPrices(document);
+      }
+      
+      const fmt = (window.TC && window.TC.formatPrice)
+        ? ngn => (ngn === 0 ? 'FREE' : TC.formatPrice(ngn))
+        : ngn => (ngn === 0 ? 'FREE' : '₦' + ngn.toLocaleString('en-NG'));
+        
+      const fmtTotal = fmt(total);
+      document.getElementById('ck-subtotal').textContent = fmtTotal;
+      document.getElementById('ck-total-val').textContent = fmtTotal;
+      document.getElementById('ck-btn-amount').textContent = total === 0 ? '— FREE' : `— ${fmtTotal}`;
+    });
+  }
+
   document.getElementById('ck-form').addEventListener('submit', async function(e){
     e.preventDefault();
     if(isSubmitting) return; // prevent double-click
     
     const name = document.getElementById('ck-name').value.trim();
     const email = document.getElementById('ck-email').value.trim();
-    const phone = document.getElementById('ck-phone').value.trim();
+    // Use intl-tel-input formatted number
+    const phone = window.iti ? window.iti.getNumber() : document.getElementById('ck-phone').value.trim();
 
     // Basic validation
     let valid = true;
@@ -257,6 +329,14 @@
     if(!email || !email.includes('@')){ document.getElementById('err-email').textContent='Valid email required'; valid=false; }
     else{ document.getElementById('err-email').textContent=''; }
     if(!valid) return;
+    
+    // Validate phone if not empty
+    if(phone && window.iti && !window.iti.isValidNumber()){
+      document.getElementById('err-phone').textContent='Invalid phone number';
+      return;
+    } else {
+      document.getElementById('err-phone').textContent='';
+    }
 
     isSubmitting = true;
     // Show loading

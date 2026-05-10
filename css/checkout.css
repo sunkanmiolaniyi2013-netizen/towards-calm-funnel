@@ -34,6 +34,19 @@
 .ck-divider-label::before,.ck-divider-label::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:#f0d0d0}
 .ck-divider-label::before{left:0}.ck-divider-label::after{right:0}
 
+/* intl-tel-input override */
+.iti{width:100%}
+.iti__country-list{font-family:'Barlow',sans-serif;font-size:.9rem}
+
+/* Support Checkbox */
+.ck-support-wrap{display:block;cursor:pointer;margin-bottom:1.25rem}
+.ck-support-wrap input{display:none}
+.ck-support-content{border:1px solid #e0d0d0;border-radius:8px;padding:1rem;display:flex;justify-content:space-between;align-items:center;background:#fff;transition:all .2s ease}
+.ck-support-text{font-size:.95rem;font-weight:600;color:#444}
+.ck-support-price{font-weight:800;font-size:1rem;color:#1c1c1c}
+.ck-support-wrap input:checked + .ck-support-content{background:#fdf5f7;border-color:#c4859a;box-shadow:0 2px 12px rgba(196,133,154,.15)}
+.ck-support-wrap input:checked + .ck-support-content .ck-support-text{color:#c4859a}
+
 .ck-pay-methods{margin-bottom:1rem}
 .ck-pay-method{border:2px solid #c4859a;border-radius:8px;padding:.85rem 1rem;display:flex;align-items:center;gap:.75rem;background:#fdf5f7}
 .ck-paystack-logo{height:26px;width:auto}
