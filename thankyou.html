@@ -150,12 +150,16 @@
   cart.forEach(item => {
     const row = document.createElement('div');
     row.className = 'ty-order-row';
-    const price = (!item.price || item.price === 0) ? '<span class="ty-free">FREE</span>' : '₦' + item.price.toLocaleString('en-NG');
+    let priceText = '<span class="ty-free">FREE</span>';
+    if(item.price > 0) {
+      priceText = (window.TC && window.TC.formatPrice) ? window.TC.formatPrice(item.price) : '₦' + item.price.toLocaleString('en-NG');
+    }
+    
     row.innerHTML = `
       <span class="ty-item-name">
         ${item.isOTO ? '⭐ ' : '✅ '}${item.name || item.id}
       </span>
-      <span>${price}</span>`;
+      <span class="ty-item-price" data-price="${item.price || 0}">${priceText}</span>`;
     list.appendChild(row);
   });
 
@@ -165,9 +169,16 @@
     ? TC.formatPrice(total)
     : (total === 0 ? 'FREE' : '₦' + total.toLocaleString('en-NG'));
   totalEl.textContent = fmtTy;
+  
   // Also update when currency loads
-  if(window.TC && window.TC.onReady && total > 0){
-    TC.onReady(() => { totalEl.textContent = TC.formatPrice(total); });
+  if(window.TC && window.TC.onReady){
+    TC.onReady(() => { 
+      if(total > 0) totalEl.textContent = TC.formatPrice(total); 
+      document.querySelectorAll('.ty-item-price').forEach(el => {
+        const p = parseFloat(el.getAttribute('data-price'));
+        if(p > 0) el.innerHTML = TC.formatPrice(p);
+      });
+    });
   }
 
   // Reference

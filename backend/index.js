@@ -59,8 +59,8 @@ app.get('/api/config', (req, res) => {
         'Inner child healing exercises',
         'Nervous system reset guide'
       ],
-      originalPrice: 25000,
-      salePrice: 5000,
+      originalPrice: 461538,
+      salePrice: 19954,
       image: 'images/ChatGPT_Image_May_2__2026__06_45_21_PM.png',
       acceptLabel: 'Add My Healing Vault',
       declineLabel: "I'd rather pay full price",
