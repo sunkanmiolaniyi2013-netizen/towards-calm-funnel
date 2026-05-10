@@ -46,6 +46,10 @@
 .ck-support-price{font-weight:800;font-size:1rem;color:#1c1c1c}
 .ck-support-wrap input:checked + .ck-support-content{background:#fdf5f7;border-color:#c4859a;box-shadow:0 2px 12px rgba(196,133,154,.15)}
 .ck-support-wrap input:checked + .ck-support-content .ck-support-text{color:#c4859a}
+.ck-support-box{width:22px;height:22px;border:2px solid #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .2s ease;flex-shrink:0;background:#fff}
+.ck-support-box svg{width:14px;height:14px;opacity:0;transition:opacity .2s ease}
+.ck-support-wrap input:checked + .ck-support-content .ck-support-box{background:#c4859a;border-color:#c4859a}
+.ck-support-wrap input:checked + .ck-support-content .ck-support-box svg{opacity:1}
 
 .ck-pay-methods{margin-bottom:1rem}
 .ck-pay-method{border:2px solid #c4859a;border-radius:8px;padding:.85rem 1rem;display:flex;align-items:center;gap:.75rem;background:#fdf5f7}
