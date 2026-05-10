@@ -36,6 +36,8 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}button{cur
 .gal-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
 .g-th{border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;aspect-ratio:1/1;background:#f5d8d8;transition:border-color .2s}
 .g-th img{width:100%;height:100%;object-fit:cover}.g-th.on{border-color:#c4859a}.g-th:hover:not(.on){border-color:#d8a0b0}
+.gal-arrow{display:none;position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.8);border-radius:50%;width:40px;height:40px;align-items:center;justify-content:center;color:#333;z-index:10;box-shadow:0 2px 5px rgba(0,0,0,0.2)}
+.gal-prev{left:10px}.gal-next{right:10px}
 
 /* INFO */
 .prod-info{padding-top:.25rem}
@@ -227,6 +229,8 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}button{cur
   .gal-main::-webkit-scrollbar{display:none}
   .gal-main img{scroll-snap-align:start}
   .mobile-slide{display:block}
+  .gal-arrow{display:flex}
+  .logos-bar{display:none}
   .two-col{grid-template-columns:1fr}.stats-wrap{grid-template-columns:1fr}
   .testi-cards{grid-template-columns:1fr}
   .footer-inner{grid-template-columns:1fr 1fr}

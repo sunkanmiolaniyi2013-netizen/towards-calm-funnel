@@ -72,10 +72,14 @@
 <div class="prod-wrap">
   <!-- Gallery -->
   <div class="gallery">
-    <div class="gal-main">
-      <img id="gal-main" src="images/orig-1.png" alt="200+ Therapy Bundle" width="600" height="600" fetchpriority="high"/>
-      <img class="mobile-slide" src="images/orig-2.png" alt="Therapy Worksheets" width="600" height="600" loading="lazy"/>
-      <img class="mobile-slide" src="images/orig-3.png" alt="What's Included" width="600" height="600" loading="lazy"/>
+    <div style="position:relative">
+      <div class="gal-main" id="mobile-gal-slider">
+        <img id="gal-main" src="images/orig-1.png" alt="200+ Therapy Bundle" width="600" height="600" fetchpriority="high"/>
+        <img class="mobile-slide" src="images/orig-2.png" alt="Therapy Worksheets" width="600" height="600" loading="lazy"/>
+        <img class="mobile-slide" src="images/orig-3.png" alt="What's Included" width="600" height="600" loading="lazy"/>
+      </div>
+      <button class="gal-arrow gal-prev" aria-label="Previous image"><span class="material-icons">chevron_left</span></button>
+      <button class="gal-arrow gal-next" aria-label="Next image"><span class="material-icons">chevron_right</span></button>
     </div>
     <div class="gal-thumbs">
       <div class="g-th on" data-src="images/orig-1.png" tabindex="0"><img src="images/orig-1.png" alt="Ultimate Therapy Bundle" width="150" height="150" loading="lazy"/></div>
@@ -420,6 +424,16 @@ document.querySelectorAll('.acc-btn').forEach(btn=>{
 (function(){
   let s=600;const el=()=>document.getElementById('cd-timer');
   setInterval(()=>{if(el())el().textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(s>0)s--},1000);
+})();
+/* mobile slider arrows */
+(function(){
+  const slider = document.getElementById('mobile-gal-slider');
+  const nextBtn = document.querySelector('.gal-next');
+  const prevBtn = document.querySelector('.gal-prev');
+  if(slider && nextBtn && prevBtn) {
+    nextBtn.onclick = () => slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+    prevBtn.onclick = () => slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' });
+  }
 })();
 </script>
 </body>
