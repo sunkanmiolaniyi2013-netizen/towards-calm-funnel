@@ -230,7 +230,7 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}button{cur
   .gal-main img{scroll-snap-align:start}
   .mobile-slide{display:block}
   .gal-arrow{display:flex}
-  .logo-ring{display:none}
+  .site-header{display:none}
   .two-col{grid-template-columns:1fr}.stats-wrap{grid-template-columns:1fr}
   .testi-cards{grid-template-columns:1fr}
   .footer-inner{grid-template-columns:1fr 1fr}
