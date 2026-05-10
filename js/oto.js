@@ -60,15 +60,19 @@ window.OTO = (function () {
             <ul class="oto-features">
               ${o.features.map(f => `<li>✅ ${f}</li>`).join('')}
             </ul>
+          </div>
+        </div>
+        <div class="oto-footer">
+          <div class="oto-pricing-row">
             <div class="oto-pricing">
               <span class="oto-orig" data-price="${o.originalPrice}">₦${o.originalPrice.toLocaleString('en-NG')}</span>
               <span class="oto-sale" data-price="${o.salePrice}">₦${o.salePrice.toLocaleString('en-NG')}</span>
             </div>
             <div class="oto-savings" id="oto-savings-label">₦${(o.originalPrice - o.salePrice).toLocaleString('en-NG')} Savings</div>
           </div>
+          <button class="oto-btn-accept" id="oto-accept">${o.acceptLabel}</button>
+          <button class="oto-btn-decline" id="oto-decline">${o.declineLabel}</button>
         </div>
-        <button class="oto-btn-accept" id="oto-accept">${o.acceptLabel}</button>
-        <button class="oto-btn-decline" id="oto-decline">${o.declineLabel}</button>
       </div>
     `;
     document.body.appendChild(modal);
