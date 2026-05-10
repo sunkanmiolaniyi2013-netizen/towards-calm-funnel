@@ -61,7 +61,7 @@ app.get('/api/config', (req, res) => {
       ],
       originalPrice: 25000,
       salePrice: 5000,
-      image: 'images/WEBSITE_TRAUMA_24_MARCH_SAM_1_2.webp',
+      image: 'images/ChatGPT_Image_May_2__2026__06_45_21_PM.png',
       acceptLabel: 'Add My Healing Vault',
       declineLabel: "I'd rather pay full price",
       timerSeconds: 600

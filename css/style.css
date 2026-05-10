@@ -184,26 +184,26 @@ img{display:block;max-width:100%}a{color:inherit;text-decoration:none}button{cur
 #cd-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;cursor:pointer;flex-shrink:0}
 .cd-reserved{background:#fce8e8;color:#c4859a;text-align:center;font-size:.78rem;font-weight:700;padding:.38rem 1rem;flex-shrink:0}
 .cd-welcome{display:flex;align-items:center;gap:.6rem;padding:.75rem 1.25rem;font-size:.83rem;color:#555;border-bottom:1px solid #f0d8d8;flex-shrink:0;font-weight:600}
-#cd-items{flex:1;overflow-y:auto;padding:.65rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+#cd-items{flex:1;overflow-y:auto;padding:.4rem .8rem;display:flex;flex-direction:column;gap:.4rem}
 #cd-items::-webkit-scrollbar{width:3px}#cd-items::-webkit-scrollbar-thumb{background:#f0d0d0}
 /* main item */
-.cd-main{background:#fff;border:1px solid #f0d0d0;border-radius:8px;padding:.8rem;display:flex;align-items:center;gap:.7rem}
-.cd-main-img{width:54px;height:54px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#fce8e8}
+.cd-main{background:transparent;border:none;border-bottom:1px solid #f0d8d8;padding:.4rem 0;display:flex;align-items:center;gap:.6rem}
+.cd-main-img{width:48px;height:48px;border-radius:4px;overflow:hidden;flex-shrink:0;background:#fce8e8}
 .cd-main-img img{width:100%;height:100%;object-fit:cover}
 .cd-main-info{flex:1}
-.cd-main-name{font-size:.82rem;font-weight:700;line-height:1.3;margin-bottom:.2rem}
-.cd-qty{display:flex;align-items:center;gap:.35rem;margin-top:.2rem}
-.qty-b{width:22px;height:22px;border:1px solid #ddd;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#555;cursor:pointer;background:#fff}
-.qty-n{font-size:.82rem;font-weight:600;min-width:14px;text-align:center}
-.cd-main-price{font-size:.88rem;font-weight:800;color:#c4859a;flex-shrink:0}
+.cd-main-name{font-size:.82rem;font-weight:700;line-height:1.2;margin-bottom:.15rem}
+.cd-qty{display:flex;align-items:center;gap:.35rem;margin-top:.15rem}
+.qty-b{width:20px;height:20px;border:1px solid #ddd;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#555;cursor:pointer;background:#fff}
+.qty-n{font-size:.8rem;font-weight:600;min-width:14px;text-align:center}
+.cd-main-price{font-size:.85rem;font-weight:800;color:#c4859a;flex-shrink:0}
 .cd-del{color:#ccc;cursor:pointer;font-size:.9rem;flex-shrink:0;transition:color .2s}.cd-del:hover{color:#c4859a}
 /* bump items */
-.cd-bump{background:#fce8e8;border:1px solid #f0d0d0;border-radius:8px;padding:.75rem;display:flex;align-items:center;gap:.65rem}
-.cd-bump-img{width:50px;height:50px;border-radius:6px;overflow:hidden;flex-shrink:0;background:#f5d5d5}
+.cd-bump{background:transparent;border:none;padding:.3rem 0;display:flex;align-items:center;gap:.6rem}
+.cd-bump-img{width:46px;height:46px;border-radius:4px;overflow:hidden;flex-shrink:0;background:#f5d5d5}
 .cd-bump-img img{width:100%;height:100%;object-fit:cover}
 .cd-bump-info{flex:1;min-width:0}
-.cd-bump-name{font-size:.8rem;font-weight:700;line-height:1.3;margin-bottom:.15rem}
-.cd-bump-price{font-size:.8rem;font-weight:700;color:#c4859a}
+.cd-bump-name{font-size:.78rem;font-weight:700;line-height:1.2;margin-bottom:.15rem}
+.cd-bump-price{font-size:.78rem;font-weight:700;color:#c4859a}
 /* toggle */
 .toggle{position:relative;width:42px;height:24px;cursor:pointer;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0;position:absolute}
