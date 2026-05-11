@@ -146,14 +146,7 @@
     else TC.track('free_claim', { reference: ref });
   }
 
-  // Finalize Funnel + Trigger GHL Webhook
-  if(ref){
-    fetch('/api/pay/finalize', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ reference: ref, clientCart: cart })
-    }).catch(e => console.error('Finalize error', e));
-  }
+  // Finalize API call removed (now individual webhooks fire instantly per step)
 
   const list = document.getElementById('ty-items');
   cart.forEach(item => {

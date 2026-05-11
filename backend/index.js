@@ -378,44 +378,31 @@ app.post('/api/pay/confirm', async (req, res) => {
       pendingLeads.delete(resolvedEmail);
     }
 
-    // Save Authorization for 1-Click Upsells + Start 30min funnel completion timer
+    // Save Authorization for 1-Click Upsells
     let auth = null;
     if(txn.authorization && txn.authorization.reusable){
       auth = txn.authorization;
     }
     
-    const funnelData = {
+    // Fire the GHL webhook instantly for the checkout page items
+    await fireGHLWebhook({
+      type: 'PAID',
       name: name || txn.metadata?.name,
       email: resolvedEmail,
       phone: phone || txn.metadata?.phone,
       cart: cart || [],
-      totalPaid: amountPaid,
+      amount_paid: amountPaid,
+      reference,
+      paid_at: new Date().toISOString()
+    });
+
+    const funnelData = {
+      name: name || txn.metadata?.name,
+      email: resolvedEmail,
+      phone: phone || txn.metadata?.phone,
       reference,
       auth
     };
-
-    // Auto-fire webhook if they abandon the funnel before reaching Thank You page
-    funnelData.timer = setTimeout(async () => {
-      if(activeFunnels.has(reference)){
-        console.log(`⏳ Funnel abandoned/timed out for ${reference}. Firing final webhooks.`);
-        const fd = activeFunnels.get(reference);
-        for (const item of fd.cart) {
-          await fireGHLWebhook({
-            type: 'PAID',
-            name: fd.name,
-            email: fd.email,
-            phone: fd.phone,
-            cart: [item],
-            amount_paid: fd.totalPaid,
-            reference: fd.reference,
-            paid_at: new Date().toISOString()
-          });
-          // Small delay to prevent rate limits
-          await new Promise(r => setTimeout(r, 500));
-        }
-        activeFunnels.delete(reference);
-      }
-    }, 30 * 60 * 1000); // 30 minutes
 
     activeFunnels.set(reference, funnelData);
 
@@ -459,10 +446,20 @@ app.post('/api/pay/upsell', async (req, res) => {
     
     if(charge.data.status && charge.data.data.status === 'success'){
       console.log(`✅ 1-Click Upsell successful: ${item.name}`);
-      // Add item to backend funnel cart
-      funnel.cart.push(item);
-      funnel.totalPaid += amount;
       analytics.revenue += amount;
+      
+      // Fire GHL webhook instantly for JUST this upsell item
+      await fireGHLWebhook({
+        type: 'PAID',
+        name: funnel.name,
+        email: funnel.email,
+        phone: funnel.phone,
+        cart: [item],
+        amount_paid: amount,
+        reference: charge.data.data.reference || reference,
+        paid_at: new Date().toISOString()
+      });
+      
       return res.json({ success: true });
     } else {
       console.warn(`⚠️ 1-Click failed, falling back to popup:`, charge.data.message);
@@ -475,52 +472,6 @@ app.post('/api/pay/upsell', async (req, res) => {
   }
 });
 
-// ============================================================
-// POST /api/pay/finalize
-// Called by Thank You page. Fires GHL Webhook immediately.
-// ============================================================
-app.post('/api/pay/finalize', async (req, res) => {
-  try {
-    const { reference, clientCart } = req.body;
-    
-    if(activeFunnels.has(reference)){
-      const funnel = activeFunnels.get(reference);
-      clearTimeout(funnel.timer); // Cancel the 30min timeout
-      
-      // Trust backend cart, but merge clientCart to ensure Fallback upsells are tracked
-      let finalCart = [...(funnel.cart || [])];
-      if (clientCart && Array.isArray(clientCart)) {
-        for (const item of clientCart) {
-          if (!finalCart.find(i => i.id === item.id)) {
-            finalCart.push(item);
-          }
-        }
-      }
-      
-      console.log(`🎉 Funnel completed for ${funnel.email}. Firing ${finalCart.length} item webhooks.`);
-      
-      for (const item of finalCart) {
-        await fireGHLWebhook({
-          type: 'PAID',
-          name: funnel.name,
-          email: funnel.email,
-          phone: funnel.phone,
-          cart: [item],
-          amount_paid: funnel.totalPaid,
-          reference: funnel.reference,
-          paid_at: new Date().toISOString()
-        });
-        // Small delay to prevent rate limits
-        await new Promise(r => setTimeout(r, 500));
-      }
-      
-      activeFunnels.delete(reference);
-    }
-    res.json({ success: true });
-  } catch(e) {
-    res.json({ success: false });
-  }
-});
 
 // ============================================================
 // POST /api/pay/webhook

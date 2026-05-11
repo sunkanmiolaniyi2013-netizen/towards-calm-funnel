@@ -186,7 +186,18 @@
         if(initData.success && initData.access_code){
           var paystack = new PaystackPop();
           paystack.resumeTransaction(initData.access_code, {
-            onSuccess: async function(){
+            onSuccess: async function(response){
+              try {
+                await fetch('/api/pay/confirm', {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({
+                    reference: response.reference,
+                    email: email, name: 'Upsell Buyer', phone: '',
+                    cart: [ITEM], total: ITEM.price
+                  })
+                });
+              } catch(e) { console.error('Fallback confirm error', e); }
               cart.push(ITEM);
               sessionStorage.setItem('cart', JSON.stringify(cart));
               let tot = parseInt(sessionStorage.getItem('cartTotal')||'0', 10);
