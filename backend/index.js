@@ -397,18 +397,22 @@ app.post('/api/pay/confirm', async (req, res) => {
     // Auto-fire webhook if they abandon the funnel before reaching Thank You page
     funnelData.timer = setTimeout(async () => {
       if(activeFunnels.has(reference)){
-        console.log(`⏳ Funnel abandoned/timed out for ${reference}. Firing final webhook.`);
+        console.log(`⏳ Funnel abandoned/timed out for ${reference}. Firing final webhooks.`);
         const fd = activeFunnels.get(reference);
-        await fireGHLWebhook({
-          type: 'PAID',
-          name: fd.name,
-          email: fd.email,
-          phone: fd.phone,
-          cart: fd.cart,
-          amount_paid: fd.totalPaid,
-          reference: fd.reference,
-          paid_at: new Date().toISOString()
-        });
+        for (const item of fd.cart) {
+          await fireGHLWebhook({
+            type: 'PAID',
+            name: fd.name,
+            email: fd.email,
+            phone: fd.phone,
+            cart: [item],
+            amount_paid: fd.totalPaid,
+            reference: fd.reference,
+            paid_at: new Date().toISOString()
+          });
+          // Small delay to prevent rate limits
+          await new Promise(r => setTimeout(r, 500));
+        }
         activeFunnels.delete(reference);
       }
     }, 30 * 60 * 1000); // 30 minutes
@@ -483,21 +487,32 @@ app.post('/api/pay/finalize', async (req, res) => {
       const funnel = activeFunnels.get(reference);
       clearTimeout(funnel.timer); // Cancel the 30min timeout
       
-      // Trust backend cart if it has items, otherwise fallback to clientCart
-      const finalCart = (funnel.cart && funnel.cart.length > 0) ? funnel.cart : (clientCart || []);
+      // Trust backend cart, but merge clientCart to ensure Fallback upsells are tracked
+      let finalCart = [...(funnel.cart || [])];
+      if (clientCart && Array.isArray(clientCart)) {
+        for (const item of clientCart) {
+          if (!finalCart.find(i => i.id === item.id)) {
+            finalCart.push(item);
+          }
+        }
+      }
       
-      console.log(`🎉 Funnel completed for ${funnel.email}. Firing webhook.`);
+      console.log(`🎉 Funnel completed for ${funnel.email}. Firing ${finalCart.length} item webhooks.`);
       
-      await fireGHLWebhook({
-        type: 'PAID',
-        name: funnel.name,
-        email: funnel.email,
-        phone: funnel.phone,
-        cart: finalCart,
-        amount_paid: funnel.totalPaid,
-        reference: funnel.reference,
-        paid_at: new Date().toISOString()
-      });
+      for (const item of finalCart) {
+        await fireGHLWebhook({
+          type: 'PAID',
+          name: funnel.name,
+          email: funnel.email,
+          phone: funnel.phone,
+          cart: [item],
+          amount_paid: funnel.totalPaid,
+          reference: funnel.reference,
+          paid_at: new Date().toISOString()
+        });
+        // Small delay to prevent rate limits
+        await new Promise(r => setTimeout(r, 500));
+      }
       
       activeFunnels.delete(reference);
     }
