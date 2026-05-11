@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Wait! Special Offer — Towards Calm</title>
+<meta name="robots" content="noindex"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="css/style.css"/>
+<script src="https://js.paystack.co/v2/inline.js"></script>
+<script src="js/analytics-tracker.js"></script>
+<script src="js/currency.js"></script>
+<style>
+  body { background: #fff; font-family: 'Barlow', sans-serif; margin: 0; color: #1c1c1c; }
+  .ck-header { background: #fff; border-bottom: 1px solid #f0d8d8; padding: .85rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .ck-logo { display: flex; align-items: center; gap: .5rem; text-decoration: none; color: #1c1c1c; }
+  .up-header-status { text-align: right; }
+  .up-header-status-title { font-weight: 700; font-size: .9rem; display: flex; align-items: center; gap: .3rem; justify-content: flex-end; }
+  .up-header-status-sub { font-size: .75rem; color: #c4859a; text-decoration: underline; margin-top: .1rem; }
+  
+  .up-wrap { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
+  .up-alert { text-align: center; margin-bottom: 2rem; }
+  .up-alert-title { font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: .5rem; margin-bottom: .4rem; }
+  
+  .up-timer-bar { background: #fce8e8; padding: .85rem 1rem; border-radius: 8px; text-align: center; font-weight: 600; color: #555; margin-bottom: 2rem; font-size: .95rem; }
+  .up-timer-val { color: #c4859a; font-weight: 800; font-size: 1.1rem; }
+  
+  .up-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+  .up-img-wrap img { width: 100%; border-radius: 0; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  
+  .up-info { display: flex; flex-direction: column; gap: 1rem; }
+  .up-title { font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1.2; }
+  .up-pricing { display: flex; align-items: baseline; gap: .5rem; }
+  .up-orig { font-size: 1rem; text-decoration: line-through; color: #bbb; }
+  .up-sale { font-size: 1.3rem; font-weight: 800; }
+  .up-savings { font-size: .9rem; color: #4caf50; font-weight: 700; }
+  
+  .up-desc { font-size: .95rem; color: #555; line-height: 1.5; }
+  
+  .up-actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: .75rem; }
+  .up-btn-accept { background: #c4859a; color: #fff; border: none; padding: 1.1rem; border-radius: 6px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; display: flex; justify-content: center; align-items: center; gap: .5rem; }
+  .up-btn-accept:hover { background: #b0728a; }
+  .up-btn-decline { background: none; border: none; color: #c4859a; font-size: .85rem; text-decoration: underline; cursor: pointer; padding: .5rem; }
+  
+  @media(max-width: 768px){
+    .up-content { grid-template-columns: 1fr; gap: 1.5rem; }
+    .ck-header { padding: .75rem 1rem; }
+    .up-alert-title { font-size: 1.3rem; }
+    .up-title { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="ck-header">
+  <div class="ck-logo">
+    <div class="logo-ring" style="width:32px;height:32px">
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="6" stroke="#c4859a" stroke-width="2"/><path d="M8 35c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#c4859a" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+    <span style="font-weight:700;font-size:.9rem">Towards Calm</span>
+  </div>
+  <div class="up-header-status">
+    <div class="up-header-status-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4859a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      You've paid for your order.
+    </div>
+    <div class="up-header-status-sub">Order Confirmed</div>
+  </div>
+</header>
+
+<div class="up-wrap">
+  <div class="up-alert">
+    <div class="up-alert-title">Before you go!</div>
+  </div>
+  
+  <div class="up-timer-bar">
+    Your order is confirmed but you can still add the following for a limited time <span class="up-timer-val" id="timer">09:36</span>
+  </div>
+
+  <div class="up-content">
+    <div class="up-img-wrap">
+      <img src="images/ezgif-6-5c09475a2e.webp" alt="50-Page Trauma Therapy Kit"/>
+    </div>
+    <div class="up-info">
+      <h1 class="up-title">50-Page Trauma Therapy Kit</h1>
+      <div class="up-pricing">
+        <span class="up-orig" data-price="306153">₦306,153</span>
+        <span class="up-sale" data-price="9230">₦9,230</span>
+        <span class="up-savings" id="up-savings-lbl" data-price="296923">Save ₦296,923</span>
+      </div>
+      <p class="up-desc">
+        Don't miss out on this offer... it expires after you leave this page!
+      </p>
+      <div class="up-actions">
+        <button class="up-btn-accept" id="btn-accept">
+          <span class="btn-text">Complete Purchase • <span class="btn-price" data-price="9230">₦9,230</span></span>
+        </button>
+        <button class="up-btn-decline" id="btn-decline">Decline this offer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ITEM = { id: 'trauma-kit', name: '50-Page Trauma Therapy Kit', price: 9230, isOTO: true };
+  const NEXT_PAGE = 'upsell3.html';
+  
+  // Format currencies on load
+  if(window.TC && window.TC.onReady){
+    window.TC.onReady(() => {
+      if(window.TC.applyPrices) window.TC.applyPrices(document);
+      const savingsEl = document.getElementById('up-savings-lbl');
+      if(savingsEl) savingsEl.textContent = 'Save ' + window.TC.formatPrice(296923);
+    });
+  }
+
+  // Timer
+  let time = 9 * 60 + 36;
+  setInterval(() => {
+    if(time <= 0) return;
+    time--;
+    const m = Math.floor(time/60).toString().padStart(2,'0');
+    const s = (time%60).toString().padStart(2,'0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  }, 1000);
+
+  // Read ref and cart
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+  if(!ref) { window.location.href = 'index.html'; return; }
+  
+  let cart = [];
+  try { cart = JSON.parse(sessionStorage.getItem('cart') || '[]'); } catch(e){}
+
+  function goNext(){
+    window.location.href = `${NEXT_PAGE}?ref=${ref}`;
+  }
+
+  const btnAcc = document.getElementById('btn-accept');
+  const btnDec = document.getElementById('btn-decline');
+
+  btnDec.addEventListener('click', goNext);
+
+  btnAcc.addEventListener('click', async () => {
+    btnAcc.disabled = true;
+    btnAcc.innerHTML = 'Processing...';
+    
+    try {
+      const res = await fetch('/api/pay/upsell', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ reference: ref, item: ITEM, amount: ITEM.price })
+      });
+      const data = await res.json();
+      
+      if(data.success){
+        // 1-Click success!
+        cart.push(ITEM);
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+        let tot = parseInt(sessionStorage.getItem('cartTotal')||'0', 10);
+        sessionStorage.setItem('cartTotal', tot + ITEM.price);
+        goNext();
+      } else if(data.requires_popup) {
+        // Fallback: Launch Paystack
+        const cur = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : {code:'NGN', rate:1};
+        const email = document.querySelector('.up-header-status-sub').textContent;
+        
+        const initRes = await fetch('/api/pay/initialize', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            name: 'Upsell Buyer', email: 'buyer@towardscalm.com', phone: '',
+            cart: [ITEM], total: ITEM.price,
+            currency: cur.code, convertedAmount: Math.round(ITEM.price * cur.rate * 100)/100
+          })
+        });
+        const initData = await initRes.json();
+        if(initData.success && initData.access_code){
+          var paystack = new PaystackPop();
+          paystack.resumeTransaction(initData.access_code, {
+            onSuccess: async function(){
+              cart.push(ITEM);
+              sessionStorage.setItem('cart', JSON.stringify(cart));
+              let tot = parseInt(sessionStorage.getItem('cartTotal')||'0', 10);
+              sessionStorage.setItem('cartTotal', tot + ITEM.price);
+              goNext();
+            },
+            onCancel: function(){
+              btnAcc.disabled = false;
+              btnAcc.innerHTML = `<span class="btn-text">Complete Purchase • <span class="btn-price" data-price="9230"></span></span>`;
+              if(window.TC && window.TC.applyPrices) window.TC.applyPrices(document);
+            }
+          });
+        } else {
+          alert('Could not initialize payment.');
+          btnAcc.disabled = false;
+          btnAcc.innerHTML = 'Try Again';
+        }
+      } else {
+        alert('An error occurred.');
+        btnAcc.disabled = false;
+        btnAcc.innerHTML = 'Try Again';
+      }
+    } catch(err){
+      alert('Network error. Please check connection.');
+      btnAcc.disabled = false;
+      btnAcc.innerHTML = 'Try Again';
+    }
+  });
+
+})();
+</script>
+</body>
+</html>

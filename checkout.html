@@ -355,7 +355,10 @@
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ name, email, phone, cart })
         });
-        window.location.href = 'thankyou.html';
+        // Still route them to the upsell funnel!
+        // We'll generate a fake reference for free claims so upsells can track them
+        const fakeRef = 'FREE_' + Date.now();
+        window.location.href = 'upsell1.html?ref=' + fakeRef;
         return;
       }
 
@@ -393,9 +396,9 @@
               });
             } catch(e){
               console.error('Confirm failed:', e);
-              // Still navigate even if confirm fails
             }
-            window.location.href = 'thankyou.html?ref=' + response.reference;
+            // Navigate to Funnel Upsell 1 instead of Thank You
+            window.location.href = 'upsell1.html?ref=' + response.reference;
           },
           onCancel: function(){
             isSubmitting = false;

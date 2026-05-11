@@ -146,6 +146,15 @@
     else TC.track('free_claim', { reference: ref });
   }
 
+  // Finalize Funnel + Trigger GHL Webhook
+  if(ref){
+    fetch('/api/pay/finalize', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ reference: ref, clientCart: cart })
+    }).catch(e => console.error('Finalize error', e));
+  }
+
   const list = document.getElementById('ty-items');
   cart.forEach(item => {
     const row = document.createElement('div');
