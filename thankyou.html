@@ -157,24 +157,24 @@
 
   const list = document.getElementById('ty-items');
 
-  // === Product Download Link Map ===
+  // === Product Download Link Map (keyed by exact cart item id) ===
   const DOWNLOAD_LINKS = {
-    // Main bundles (matched by id)
-    '200-therapy-bundle':     'https://drive.google.com/drive/folders/172LuiTF3lW7jGPLosZzIZ_uHFNCcjZUQ?usp=drive_link',
-    'adhd-bundle':            'https://drive.google.com/drive/folders/16tHt1bKRYS5jtCCJ2TZF78X7Ul9KRvJV?usp=drive_link',
-    'trauma-ptsd':            'https://drive.google.com/drive/folders/1_l0_IpS2yzRQchKnaz9DZUjHyKBEyYMi?usp=drive_link',
-    'stress-management':      'https://drive.google.com/drive/folders/1K4pCSKKmDDierFkUwyeBpMtVraLK4LL8?usp=drive_link',
-    'self-sabotage':          'https://drive.google.com/drive/folders/1cYYt-Q80C5uLCfNvmHmo_mfRn884r1BW?usp=drive_link',
-    'building-relationship':  'https://drive.google.com/drive/folders/1eBc4w16t1nQ4M4FC6j_oblj1tVZX6wwq?usp=drive_link',
-    'mindfulness-calming':    'https://drive.google.com/file/d/1g-odwcxHI5d-G55-EO-GuSfz5sYX_VXt/view?usp=drive_link',
-    // OTO
-    'oto-mystery-box':        'https://drive.google.com/drive/folders/1U4k_TV4CH4sLHZmDmJyULO-UkhmQASDi?usp=drive_link',
-    // Upsells
-    'colorful-bundle':        'https://drive.google.com/drive/folders/1O2bPzmzluobbZluhVgv2GeIwnCZLogMN?usp=drive_link',
-    'trauma-kit':             'https://drive.google.com/drive/folders/1DBRoev7Y00AWU544qVhTq-sbxrThKkC6?usp=drive_link',
-    'circle-of-control':      'https://drive.google.com/drive/folders/1DoFVv1HLv1YmJ02Bi6rzqMXu8gu-tczH?usp=drive_link',
-    // Support add-on (no download link needed)
-    'support-mission':        null
+    // Main bundles — IDs from js/offers.js
+    'therapy-bundle':                 'https://drive.google.com/drive/folders/172LuiTF3lW7jGPLosZzIZ_uHFNCcjZUQ?usp=drive_link',
+    'adhd-bundle':                    'https://drive.google.com/drive/folders/16tHt1bKRYS5jtCCJ2TZF78X7Ul9KRvJV?usp=drive_link',
+    'trauma-ptsd-mindfulness':        'https://drive.google.com/drive/folders/1_l0_IpS2yzRQchKnaz9DZUjHyKBEyYMi?usp=drive_link',
+    'stress-management-workbook':     'https://drive.google.com/drive/folders/1K4pCSKKmDDierFkUwyeBpMtVraLK4LL8?usp=drive_link',
+    'self-sabotage-burnout':          'https://drive.google.com/drive/folders/1cYYt-Q80C5uLCfNvmHmo_mfRn884r1BW?usp=drive_link',
+    'building-healthy-relationships': 'https://drive.google.com/drive/folders/1eBc4w16t1nQ4M4FC6j_oblj1tVZX6wwq?usp=drive_link',
+    'mindfulness-calming':            'https://drive.google.com/file/d/1g-odwcxHI5d-G55-EO-GuSfz5sYX_VXt/view?usp=drive_link',
+    // OTO — ID from js/oto.js
+    'oto-mystery-box':                'https://drive.google.com/drive/folders/1U4k_TV4CH4sLHZmDmJyULO-UkhmQASDi?usp=drive_link',
+    // Upsells — IDs from upsell1/2/3.html
+    'colorful-bundle':                'https://drive.google.com/drive/folders/1O2bPzmzluobbZluhVgv2GeIwnCZLogMN?usp=drive_link',
+    'trauma-kit':                     'https://drive.google.com/drive/folders/1DBRoev7Y00AWU544qVhTq-sbxrThKkC6?usp=drive_link',
+    'circle-of-control':              'https://drive.google.com/drive/folders/1DoFVv1HLv1YmJ02Bi6rzqMXu8gu-tczH?usp=drive_link',
+    // Support add-on — no download
+    'support-mission':                null
   };
 
   // Render order items
