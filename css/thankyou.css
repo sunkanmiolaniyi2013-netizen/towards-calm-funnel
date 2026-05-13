@@ -49,6 +49,12 @@
 .ty-wa{background:#25d366}
 .ty-fb{background:#1877f2}
 
+/* Download buttons */
+.ty-download-btn{display:flex;align-items:center;gap:.65rem;background:#fdf5f7;border:1.5px solid #c4859a;border-radius:8px;padding:.9rem 1.25rem;font-size:.9rem;font-weight:700;color:#c4859a;text-decoration:none;transition:all .2s ease}
+.ty-download-btn:hover{background:#c4859a;color:#fff;box-shadow:0 4px 12px rgba(196,133,154,.3);transform:translateY(-1px)}
+.ty-download-btn svg{flex-shrink:0;transition:stroke .2s}
+.ty-download-btn:hover svg{stroke:#fff}
+
 /* Back link */
 .ty-back{text-align:center;font-size:.82rem;color:#c4859a;text-decoration:underline;cursor:pointer}
 .ty-back:hover{color:#b0728a}

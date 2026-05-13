@@ -70,6 +70,13 @@
     <div class="ty-order-ref" id="ty-ref"></div>
   </div>
 
+  <!-- DOWNLOAD BUTTONS -->
+  <div class="ty-order-card" id="ty-downloads-card" style="display:none">
+    <h2 class="ty-order-title">⬇️ Access Your Products</h2>
+    <p style="font-size:.9rem;color:#777;margin-bottom:1.2rem">Click the button below for each product you purchased to access your files instantly.</p>
+    <div id="ty-download-list" style="display:flex;flex-direction:column;gap:.85rem;"></div>
+  </div>
+
   <!-- WHAT TO DO NEXT -->
   <div class="ty-next-card">
     <h2 class="ty-next-title">What happens next?</h2>
@@ -149,6 +156,28 @@
   // Finalize API call removed (now individual webhooks fire instantly per step)
 
   const list = document.getElementById('ty-items');
+
+  // === Product Download Link Map ===
+  const DOWNLOAD_LINKS = {
+    // Main bundles (matched by id)
+    '200-therapy-bundle':     'https://drive.google.com/drive/folders/172LuiTF3lW7jGPLosZzIZ_uHFNCcjZUQ?usp=drive_link',
+    'adhd-bundle':            'https://drive.google.com/drive/folders/16tHt1bKRYS5jtCCJ2TZF78X7Ul9KRvJV?usp=drive_link',
+    'trauma-ptsd':            'https://drive.google.com/drive/folders/1_l0_IpS2yzRQchKnaz9DZUjHyKBEyYMi?usp=drive_link',
+    'stress-management':      'https://drive.google.com/drive/folders/1K4pCSKKmDDierFkUwyeBpMtVraLK4LL8?usp=drive_link',
+    'self-sabotage':          'https://drive.google.com/drive/folders/1cYYt-Q80C5uLCfNvmHmo_mfRn884r1BW?usp=drive_link',
+    'building-relationship':  'https://drive.google.com/drive/folders/1eBc4w16t1nQ4M4FC6j_oblj1tVZX6wwq?usp=drive_link',
+    'mindfulness-calming':    'https://drive.google.com/file/d/1g-odwcxHI5d-G55-EO-GuSfz5sYX_VXt/view?usp=drive_link',
+    // OTO
+    'oto-mystery-box':        'https://drive.google.com/drive/folders/1U4k_TV4CH4sLHZmDmJyULO-UkhmQASDi?usp=drive_link',
+    // Upsells
+    'colorful-bundle':        'https://drive.google.com/drive/folders/1O2bPzmzluobbZluhVgv2GeIwnCZLogMN?usp=drive_link',
+    'trauma-kit':             'https://drive.google.com/drive/folders/1DBRoev7Y00AWU544qVhTq-sbxrThKkC6?usp=drive_link',
+    'circle-of-control':      'https://drive.google.com/drive/folders/1DoFVv1HLv1YmJ02Bi6rzqMXu8gu-tczH?usp=drive_link',
+    // Support add-on (no download link needed)
+    'support-mission':        null
+  };
+
+  // Render order items
   cart.forEach(item => {
     const row = document.createElement('div');
     row.className = 'ty-order-row';
@@ -164,6 +193,35 @@
       <span class="ty-item-price" data-price="${item.price || 0}">${priceText}</span>`;
     list.appendChild(row);
   });
+
+  // Render download buttons
+  const downloadList = document.getElementById('ty-download-list');
+  const downloadCard = document.getElementById('ty-downloads-card');
+  let hasDownloads = false;
+
+  cart.forEach(item => {
+    const link = DOWNLOAD_LINKS[item.id];
+    if(!link) return; // Skip items with no download link (e.g. support)
+    hasDownloads = true;
+
+    const btn = document.createElement('a');
+    btn.href = link;
+    btn.target = '_blank';
+    btn.rel = 'noopener noreferrer';
+    btn.className = 'ty-download-btn';
+    btn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download: ${item.name || item.id}
+    `;
+    downloadList.appendChild(btn);
+  });
+
+  if(hasDownloads) downloadCard.style.display = 'block';
+
 
   // Total — use currency conversion if available
   const totalEl = document.getElementById('ty-total');
