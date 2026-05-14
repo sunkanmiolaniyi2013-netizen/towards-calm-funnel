@@ -384,6 +384,10 @@
         var paystack = new PaystackPop();
         paystack.resumeTransaction(data.access_code, {
           onSuccess: async function(response){
+            // Save real customer details for upsell fallback flows
+            sessionStorage.setItem('customerName', name);
+            sessionStorage.setItem('customerEmail', email);
+            sessionStorage.setItem('customerPhone', phone || '');
             // Wait for backend to confirm + fire GHL BEFORE navigating
             try {
               await fetch('/api/pay/confirm', {

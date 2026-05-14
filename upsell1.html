@@ -170,14 +170,23 @@
         sessionStorage.setItem('cartTotal', tot + ITEM.price);
         goNext();
       } else if(data.requires_popup) {
-        // Fallback: Launch Paystack
+        // Fallback: Launch Paystack with REAL customer data
         const cur = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : {code:'NGN', rate:1};
-        const email = document.querySelector('.up-header-status-sub').textContent; // Best effort, backend uses original email anyway
+        const custName  = sessionStorage.getItem('customerName')  || 'Customer';
+        const custEmail = sessionStorage.getItem('customerEmail') || '';
+        const custPhone = sessionStorage.getItem('customerPhone') || '';
+        
+        if(!custEmail){
+          alert('Session expired. Please contact support to complete your upsell purchase.');
+          btnAcc.disabled = false;
+          btnAcc.innerHTML = 'Try Again';
+          return;
+        }
         
         const initRes = await fetch('/api/pay/initialize', {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({
-            name: 'Upsell Buyer', email: 'buyer@towardscalm.com', phone: '',
+            name: custName, email: custEmail, phone: custPhone,
             cart: [ITEM], total: ITEM.price,
             currency: cur.code, convertedAmount: Math.round(ITEM.price * cur.rate * 100)/100
           })
@@ -193,7 +202,7 @@
                   headers: {'Content-Type': 'application/json'},
                   body: JSON.stringify({
                     reference: response.reference,
-                    email: email, name: 'Upsell Buyer', phone: '',
+                    email: custEmail, name: custName, phone: custPhone,
                     cart: [ITEM], total: ITEM.price
                   })
                 });
