@@ -12,18 +12,18 @@
 <script src="js/currency.js"></script>
 <style>
   body { background: #fff; font-family: 'Barlow', sans-serif; margin: 0; color: #1c1c1c; }
-  .ck-header { background: #fff; border-bottom: 1px solid #f0d8d8; padding: .85rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .ck-header { background: #fff; border-bottom: 1px solid #ccfbf1; padding: .85rem 2rem; display: flex; align-items: center; justify-content: space-between; }
   .ck-logo { display: flex; align-items: center; gap: .5rem; text-decoration: none; color: #1c1c1c; }
   .up-header-status { text-align: right; }
   .up-header-status-title { font-weight: 700; font-size: .9rem; display: flex; align-items: center; gap: .3rem; justify-content: flex-end; }
-  .up-header-status-sub { font-size: .75rem; color: #c4859a; text-decoration: underline; margin-top: .1rem; }
+  .up-header-status-sub { font-size: .75rem; color: #14b8a6; text-decoration: underline; margin-top: .1rem; }
   
   .up-wrap { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; }
   .up-alert { text-align: center; margin-bottom: 2rem; }
   .up-alert-title { font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: .5rem; margin-bottom: .4rem; }
   
-  .up-timer-bar { background: #fce8e8; padding: .85rem 1rem; border-radius: 8px; text-align: center; font-weight: 600; color: #555; margin-bottom: 2rem; font-size: .95rem; }
-  .up-timer-val { color: #c4859a; font-weight: 800; font-size: 1.1rem; }
+  .up-timer-bar { background: #f0fdfa; padding: .85rem 1rem; border-radius: 8px; text-align: center; font-weight: 600; color: #555; margin-bottom: 2rem; font-size: .95rem; }
+  .up-timer-val { color: #14b8a6; font-weight: 800; font-size: 1.1rem; }
   
   .up-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
   .up-img-wrap img { width: 100%; border-radius: 0; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
@@ -38,9 +38,9 @@
   .up-desc { font-size: .95rem; color: #555; line-height: 1.5; }
   
   .up-actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: .75rem; }
-  .up-btn-accept { background: #c4859a; color: #fff; border: none; padding: 1.1rem; border-radius: 6px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; display: flex; justify-content: center; align-items: center; gap: .5rem; }
-  .up-btn-accept:hover { background: #b0728a; }
-  .up-btn-decline { background: none; border: none; color: #c4859a; font-size: .85rem; text-decoration: underline; cursor: pointer; padding: .5rem; }
+  .up-btn-accept { background: #14b8a6; color: #fff; border: none; padding: 1.1rem; border-radius: 6px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; display: flex; justify-content: center; align-items: center; gap: .5rem; }
+  .up-btn-accept:hover { background: #0d9488; }
+  .up-btn-decline { background: none; border: none; color: #14b8a6; font-size: .85rem; text-decoration: underline; cursor: pointer; padding: .5rem; }
   
   @media(max-width: 768px){
     .up-content { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -55,13 +55,13 @@
 <header class="ck-header">
   <div class="ck-logo">
     <div class="logo-ring" style="width:32px;height:32px">
-      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="6" stroke="#c4859a" stroke-width="2"/><path d="M8 35c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#c4859a" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="6" stroke="#14b8a6" stroke-width="2"/><path d="M8 35c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#14b8a6" stroke-width="2" stroke-linecap="round"/></svg>
     </div>
     <span style="font-weight:700;font-size:.9rem">Towards Calm</span>
   </div>
   <div class="up-header-status">
     <div class="up-header-status-title">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4859a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       You've paid for your order.
     </div>
     <div class="up-header-status-sub">Order Confirmed</div>
