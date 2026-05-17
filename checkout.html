@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="css/style.css"/>
 <link rel="stylesheet" href="css/checkout.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
 <!-- Paystack inline JS v2 -->
 <script src="https://js.paystack.co/v2/inline.js"></script>
 <!-- Facebook Pixel -->
@@ -78,8 +79,8 @@
         <span class="ck-err" id="err-email"></span>
       </div>
       <div class="ck-field">
-        <label for="ck-phone">Phone Number <span class="ck-optional">(optional)</span></label>
-        <input type="tel" id="ck-phone" name="phone" autocomplete="tel"/>
+        <label for="ck-phone">Phone/WhatsApp Number</label>
+        <input type="tel" id="ck-phone" name="phone" autocomplete="tel" required/>
         <span class="ck-err" id="err-phone" style="margin-top:2px;"></span>
       </div>
 
@@ -166,6 +167,25 @@
 </div>
 
 
+
+<script>
+  // Initialize intl-tel-input with IP-based country detection
+  document.addEventListener('DOMContentLoaded', function() {
+    const phoneInput = document.querySelector("#ck-phone");
+    if(phoneInput && window.intlTelInput) {
+      window.iti = window.intlTelInput(phoneInput, {
+        initialCountry: "auto",
+        geoIpLookup: function(callback) {
+          fetch("https://ipapi.co/json")
+            .then(res => res.json())
+            .then(data => callback(data.country_code))
+            .catch(() => callback("us"));
+        },
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+      });
+    }
+  });
+</script>
 
 <script>
 (function(){
@@ -333,15 +353,16 @@
     else{ document.getElementById('err-name').textContent=''; }
     if(!email || !email.includes('@')){ document.getElementById('err-email').textContent='Valid email required'; valid=false; }
     else{ document.getElementById('err-email').textContent=''; }
-    if(!valid) return;
     
-    // Validate phone if not empty
-    if(phone && window.iti && !window.iti.isValidNumber()){
-      document.getElementById('err-phone').textContent='Invalid phone number';
-      return;
+    // Validate phone (now required)
+    if(!phone || (window.iti && !window.iti.isValidNumber())){
+      document.getElementById('err-phone').textContent='Valid Phone/WhatsApp number is required';
+      valid=false;
     } else {
       document.getElementById('err-phone').textContent='';
     }
+
+    if(!valid) return;
 
     isSubmitting = true;
     // Show loading
