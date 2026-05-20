@@ -48,7 +48,7 @@
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0">
-        <span class="cd-main-price" data-price="0">FREE</span>
+        <span class="cd-main-price" data-price="${OFFERS.main.price}">${OFFERS.main.price === 0 ? 'FREE' : '₦' + OFFERS.main.price.toLocaleString('en-NG')}</span>
         <span class="cd-del">🗑</span>
       </div>
     `;
@@ -87,7 +87,7 @@
   }
 
   function updateTotals(){
-    let total = 0, count = 1;
+    let total = OFFERS.main.price || 0, count = 1;
     OFFERS.bumps.forEach(b => { if(bumpsOn.has(b.id)){ total += b.price; count++; } });
 
     // Format using currency.js if available, otherwise fall back to NGN
