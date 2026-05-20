@@ -48,6 +48,7 @@
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0">
+        <span style="text-decoration:line-through;color:#ef4444;font-size:0.8rem;font-weight:700">₦30,000</span>
         <span class="cd-main-price" data-price="${OFFERS.main.price}">${OFFERS.main.price === 0 ? 'FREE' : '₦' + OFFERS.main.price.toLocaleString('en-NG')}</span>
         <span class="cd-del">🗑</span>
       </div>
@@ -66,6 +67,7 @@
         <div class="cd-bump-info">
           <div class="cd-bump-name">${bump.name}</div>
           <div class="cd-bump-price" data-price="${bump.price}">₦${bump.price.toLocaleString('en-NG')}</div>
+          <div style="font-size:0.7rem;color:#888;margin-top:0.3rem;line-height:1.2;font-style:italic">Keep this checked to claim your discount. Turn off if you want to skip this offer.</div>
         </div>
         <label class="toggle" aria-label="Add ${bump.name}">
           <input type="checkbox" ${isOn ? 'checked' : ''} data-id="${bump.id}"/>
