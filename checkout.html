@@ -94,7 +94,7 @@
             </div>
             <span class="ck-support-text">Support Our Mission: Help Us Reach More Families</span>
           </div>
-          <span class="ck-support-price" id="ck-support-price-lbl" data-price="6077"></span>
+          <span class="ck-support-price" id="ck-support-price-lbl" data-price="1500"></span>
         </div>
       </label>
 
@@ -234,7 +234,7 @@
       if(subEl) subEl.textContent = fmtTotal;
       if(totEl) totEl.textContent = fmtTotal;
       if(btnAmt) btnAmt.textContent = total === 0 ? '— FREE' : `— ${fmtTotal}`;
-      if(suppPriceEl) suppPriceEl.textContent = fmt(6077);
+      if(suppPriceEl) suppPriceEl.textContent = fmt(1500);
 
       // Show Paystack currency note for non-NGN visitors
       const cur = (window.TC && window.TC.getCurrency) ? window.TC.getCurrency() : null;
@@ -289,15 +289,15 @@
       const supportItem = {
         id: 'support-mission',
         name: 'Support Our Mission',
-        price: 6077,
+        price: 1500,
         isOTO: false
       };
       if(this.checked){
         cart.push(supportItem);
-        total += 6077;
+        total += 1500;
       } else {
         cart = cart.filter(i => i.id !== 'support-mission');
-        total -= 6077;
+        total -= 1500;
       }
       
       // Update data-price attrs
@@ -314,7 +314,7 @@
           <div class="ck-item-info">
             <div class="ck-item-name">Support Our Mission</div>
           </div>
-          <div class="ck-item-price" data-price="6077"></div>
+          <div class="ck-item-price" data-price="1500"></div>
         `;
         list.appendChild(row);
       } else {
